@@ -1,8 +1,6 @@
-/* Definitions for POSIX memory map interface.  Linux/AArch64 version.
-
-   Copyright (C) 1997-2012 Free Software Foundation, Inc.
-
+/* Copyright (C) 2013-2014 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
+   Contributed by Christian Svensson <blue@cmd.nu>
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -25,92 +23,22 @@
 /* The following definitions basically come from the kernel headers.
    But the kernel header is not namespace clean.  */
 
-
-/* Protections are chosen from these bits, OR'd together.  The
-   implementation does not necessarily support PROT_EXEC or PROT_WRITE
-   without PROT_READ.  The only guarantees are that no writing will be
-   allowed without PROT_WRITE and no access will be allowed for PROT_NONE. */
-
-#define PROT_READ       0x1             /* Page can be read.  */
-#define PROT_WRITE      0x2             /* Page can be written.  */
-#define PROT_EXEC       0x4             /* Page can be executed.  */
-#define PROT_SEM        0x8             /* Page may be used for atomic ops */
-#define PROT_NONE       0x0             /* Page can not be accessed.  */
-#define PROT_GROWSDOWN  0x01000000      /* Extend change to start of
-                                           growsdown vma (mprotect only).  */
-#define PROT_GROWSUP    0x02000000      /* Extend change to start of
-                                           growsup vma (mprotect only).  */
-
-/* Sharing types (must choose one and only one of these).  */
-#define MAP_SHARED      0x01            /* Share changes.  */
-#define MAP_PRIVATE     0x02            /* Changes are private.  */
 #ifdef __USE_MISC
-# define MAP_TYPE       0x0f            /* Mask for type of mapping.  */
+# define MAP_GROWSDOWN  0x0100          /* stack-like segment */
+# define MAP_DENYWRITE  0x0800          /* ETXTBSY */
+# define MAP_EXECUTABLE 0x1000          /* mark it as an executable */
+# define MAP_LOCKED     0x2000          /* pages are locked */
+# define MAP_NORESERVE  0x4000          /* don't check for reservations */
+# define MAP_POPULATE   0x8000          /* populate (prefault) pagetables */
+# define MAP_NONBLOCK   0x10000         /* do not block on IO */
+# define MAP_STACK      0x20000         /* give out an address that is best suited for process/thread stacks */
+# define MAP_HUGETLB    0x40000         /* create a huge page mapping */
 #endif
 
-/* Other flags.  */
-#define MAP_FIXED       0x10            /* Interpret addr exactly.  */
-#ifdef __USE_MISC
-# define MAP_FILE       0
-# define MAP_ANONYMOUS  0x20            /* Don't use a file.  */
-# define MAP_ANON       MAP_ANONYMOUS
-#endif
+/* Bits [26:31] are reserved, see mman-common.h for MAP_HUGETLB usage */
 
-#ifdef __USE_MISC
-/* These are Linux-specific.  */
-# define MAP_GROWSDOWN  0x00100         /* Stack-like segment.  */
-# define MAP_DENYWRITE  0x00800         /* ETXTBSY */
-# define MAP_EXECUTABLE 0x01000         /* Mark it as an executable.  */
-# define MAP_LOCKED     0x02000         /* Lock the mapping.  */
-# define MAP_NORESERVE  0x04000         /* Don't check for reservations.  */
-# define MAP_POPULATE   0x08000         /* Populate (prefault) pagetables.  */
-# define MAP_NONBLOCK   0x10000         /* Do not block on IO.  */
-# define MAP_STACK      0x20000         /* Allocation is for a stack.  */
-# define MAP_HUGETLB    0x40000         /* Create huge page mapping.  */
-#endif
+#define MCL_CURRENT     1               /* lock all current mappings */
+#define MCL_FUTURE      2               /* lock all future mappings */
 
-/* Flags to `msync'.  */
-#define MS_ASYNC        1               /* Sync memory asynchronously.  */
-#define MS_SYNC         4               /* Synchronous memory sync.  */
-#define MS_INVALIDATE   2               /* Invalidate the caches.  */
-
-/* Flags for `mlockall'.  */
-#define MCL_CURRENT     1               /* Lock all currently mapped pages.  */
-#define MCL_FUTURE      2               /* Lock all additions to address
-                                           space.  */
-
-/* Flags for `mremap'.  */
-#ifdef __USE_GNU
-# define MREMAP_MAYMOVE 1
-# define MREMAP_FIXED   2
-#endif
-
-/* Advice to `madvise'.  */
-#ifdef __USE_BSD
-# define MADV_NORMAL       0     /* No further special treatment.  */
-# define MADV_RANDOM       1     /* Expect random page references.  */
-# define MADV_SEQUENTIAL   2     /* Expect sequential page references.  */
-# define MADV_WILLNEED     3     /* Will need these pages.  */
-# define MADV_DONTNEED     4     /* Don't need these pages.  */
-# define MADV_REMOVE       9     /* Remove these pages and resources.  */
-# define MADV_DONTFORK     10    /* Do not inherit across fork.  */
-# define MADV_DOFORK       11    /* Do inherit across fork.  */
-# define MADV_MERGEABLE    12    /* KSM may merge identical pages.  */
-# define MADV_UNMERGEABLE  13    /* KSM may not merge identical pages.  */
-# define MADV_HUGEPAGE     14    /* Worth backing with hugepages.  */
-# define MADV_NOHUGEPAGE   15    /* Not worth backing with hugepages.  */
-# define MADV_DONTDUMP     16    /* Explicity exclude from the core dump,
-                                    overrides the coredump filter bits.  */
-# define MADV_DODUMP       17    /* Clear the MADV_DONTDUMP flag.  */
-# define MADV_HWPOISON     100   /* Poison a page for testing.  */
-# define MADV_SOFT_OFFLINE 101   /* Soft offline page for testing */
-#endif
-
-/* The POSIX people had to invent similar names for the same things.  */
-#ifdef __USE_XOPEN2K
-# define POSIX_MADV_NORMAL      0 /* No further special treatment.  */
-# define POSIX_MADV_RANDOM      1 /* Expect random page references.  */
-# define POSIX_MADV_SEQUENTIAL  2 /* Expect sequential page references.  */
-# define POSIX_MADV_WILLNEED    3 /* Will need these pages.  */
-# define POSIX_MADV_DONTNEED    4 /* Don't need these pages.  */
-#endif
+/* Include generic Linux declarations.  */
+#include <bits/mman-linux.h>
