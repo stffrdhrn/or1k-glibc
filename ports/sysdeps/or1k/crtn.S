@@ -21,14 +21,14 @@
 # <http://www.gnu.org/licenses/>.
 
   .section .init
-__init:
+_init:
   l.lwz r9,0(r1)
   l.lwz r16,4(r1)
   l.jr  r9
   l.addi  r1,r1,8
 
   .section .fini
-__fini:
+_fini:
   l.lwz r9,0(r1)
   l.jr  r9
   l.addi  r1,r1,4
