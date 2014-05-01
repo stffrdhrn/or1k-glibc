@@ -114,8 +114,9 @@ _start:
   l.ori r7,r7,lo(__libc_csu_fini)
 #endif
 
-  /* rtld_fini = NULL */
-  l.movhi r8, 0
+  /* rtld_fini = the dynamic fini address.
+     This is set by dl-start.S or just plain NULL if called directly. */
+  l.ori r8, r9, 0
 
   /* Adjust stack to account for a total of 7 args (i.e. the last one is
      on the stack. */
