@@ -81,8 +81,6 @@ _dl_start_user:
 
      argc = 0(r1)
      argv = r1 + 4
-
-     Also, uClibc code sets r9 to _dl_fini, so we continue to do so.
   */
 
   /* Load SP as argv - 4*/
@@ -93,7 +91,9 @@ _dl_start_user:
   l.lwz r3, 0(r18)
   l.sw 0(r1), r3
 
-  /* Load termination function address */
+  /* Load termination function address
+     Pass this in r9 to the _start function.
+     start.S will then pass this to __libc_start_main. */
   l.movhi r9, gotoffhi(_dl_fini)
   l.ori r9, r9, gotofflo(_dl_fini)
   l.add r9, r9, r16
