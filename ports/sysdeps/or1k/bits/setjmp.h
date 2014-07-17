@@ -1,4 +1,4 @@
-/* Copyright (C) 1997, 1998, 2000 Free Software Foundation, Inc.
+/* Copyright (C) 2014 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -26,16 +26,11 @@
 #endif
 
 #if defined __USE_MISC || defined _ASM
-# define JB_SR     0  /* To save flag */
-# define JB_GPRS   1  /* Starting with GPR1, we don't save r0 - this is special register - allways zero */
-# define JB_SP     1  /* GPR1 */
-# define JB_LR     9  /* GPR9 */
-# define JB_RV     11 /* GPR11 */
-# define JB_SIZE   (32*4)
+# define JB_SP     0  /* GPR1 */
 #endif
 
 #ifndef _ASM
-typedef long int __jmp_buf[32];
+typedef long int __jmp_buf[13];
 #endif
 
 /* Test if longjmp to JMPBUF would unwind the frame
@@ -44,4 +39,3 @@ typedef long int __jmp_buf[32];
   ((void *) (address) < (void *) (jmpbuf)[JB_SP])
 
 #endif
-
