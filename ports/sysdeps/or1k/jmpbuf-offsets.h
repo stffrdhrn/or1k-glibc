@@ -1,5 +1,5 @@
-/* Private macros for accessing __jmp_buf contents.  ARM EABI version.
-   Copyright (C) 2007 Free Software Foundation, Inc.
+/* Private macros for accessing __jmp_buf contents.  or1k version.
+   Copyright (C) 2014 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -16,7 +16,7 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#define __JMP_BUF_SP		1
+#define __JMP_BUF_SP    0
 
 /* Helper for generic ____longjmp_chk(). */
 #define JB_FRAME_ADDRESS(buf) \
