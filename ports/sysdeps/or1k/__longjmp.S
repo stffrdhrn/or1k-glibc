@@ -27,7 +27,7 @@
 
 .globl     __longjmp;
 .type      __longjmp,@function;
-.align     2;
+.align     4;
 
 __longjmp:    
   l.lwz   r1,((JB_GPRS+0)*4)(r3)
