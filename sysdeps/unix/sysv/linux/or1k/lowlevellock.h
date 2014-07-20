@@ -1,4 +1,4 @@
-/* Copyright (C) 2011 Free Software Foundation, Inc.
+/* Copyright (C) 2011-2014 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Chris Metcalf <cmetcalf@tilera.com>, 2011.
 
@@ -38,6 +38,8 @@
 #define FUTEX_TRYLOCK_PI	8
 #define FUTEX_WAIT_BITSET	9
 #define FUTEX_WAKE_BITSET	10
+#define FUTEX_WAIT_REQUEUE_PI	11
+#define FUTEX_CMP_REQUEUE_PI	12
 #define FUTEX_PRIVATE_FLAG	128
 #define FUTEX_CLOCK_REALTIME	256
 
@@ -86,6 +88,19 @@
 			      (val), (timespec));			      \
   })
 
+#define lll_futex_timed_wait_bitset(futexp, val, timespec, clockbit, private) \
+  ({									      \
+    INTERNAL_SYSCALL_DECL (__err);					      \
+    long int __ret;							      \
+    int __op = FUTEX_WAIT_BITSET | clockbit;				      \
+									      \
+    __ret = INTERNAL_SYSCALL (futex, __err, 6, (futexp),		      \
+			      __lll_private_flag (__op, private),	      \
+			      (val), (timespec), NULL /* Unused.  */, 	      \
+			      FUTEX_BITSET_MATCH_ANY);			      \
+    __ret;		      						      \
+  })
+
 #define lll_futex_wake(futexp, nr, private) \
   ({									      \
     INTERNAL_SYSCALL_DECL (__err);					      \
@@ -93,15 +108,6 @@
 			      __lll_private_flag (FUTEX_WAKE, private),	      \
 			      (nr), 0);					      \
   })
-
-#define lll_robust_dead(futexv, private) \
-  do									      \
-    {									      \
-      int *__futexp = &(futexv);					      \
-      atomic_or (__futexp, FUTEX_OWNER_DIED);				      \
-      lll_futex_wake (__futexp, 1, private);				      \
-    }									      \
-  while (0)
 
 /* Returns non-zero if error happened, zero if success.  */
 #define lll_futex_requeue(futexp, nr_wake, nr_move, mutex, val, private) \
@@ -126,7 +132,33 @@
     INTERNAL_SYSCALL_ERROR_P (__ret, __err);				      \
   })
 
+/* Priority Inheritance support.  */
+#define lll_futex_wait_requeue_pi(futexp, val, mutex, private) \
+  lll_futex_timed_wait_requeue_pi (futexp, val, NULL, 0, mutex, private)
 
+#define lll_futex_timed_wait_requeue_pi(futexp, val, timespec, clockbit,      \
+					mutex, private)			      \
+  ({									      \
+    INTERNAL_SYSCALL_DECL (__err);					      \
+    long int __ret;							      \
+    int __op = FUTEX_WAIT_REQUEUE_PI | clockbit;			      \
+									      \
+    __ret = INTERNAL_SYSCALL (futex, __err, 5, (futexp),		      \
+			      __lll_private_flag (__op, private),	      \
+			      (val), (timespec), mutex); 		      \
+    INTERNAL_SYSCALL_ERROR_P (__ret, __err);				      \
+  })
+
+#define lll_futex_cmp_requeue_pi(futexp, nr_wake, nr_move, mutex, val, priv)  \
+  ({									      \
+    INTERNAL_SYSCALL_DECL (__err);					      \
+    long int __ret;							      \
+									      \
+    __ret = INTERNAL_SYSCALL (futex, __err, 6, (futexp),		      \
+			      __lll_private_flag (FUTEX_CMP_REQUEUE_PI, priv),\
+			      (nr_wake), (nr_move), (mutex), (val));	      \
+    INTERNAL_SYSCALL_ERROR_P (__ret, __err);				      \
+  })
 
 
 static inline int __attribute__ ((always_inline))
@@ -144,14 +176,6 @@ __lll_cond_trylock (int *futex)
 }
 #define lll_cond_trylock(lock)	__lll_cond_trylock (&(lock))
 
-
-static inline int __attribute__ ((always_inline))
-__lll_robust_trylock (int *futex, int id)
-{
-  return atomic_compare_and_exchange_val_acq (futex, id, 0) != 0;
-}
-#define lll_robust_trylock(lock, id) \
-  __lll_robust_trylock (&(lock), id)
 
 extern void __lll_lock_wait_private (int *futex) attribute_hidden;
 extern void __lll_lock_wait (int *futex, int private) attribute_hidden;
