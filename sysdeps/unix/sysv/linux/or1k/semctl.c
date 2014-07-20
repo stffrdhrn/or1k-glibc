@@ -34,7 +34,7 @@ union semun
 };
 
 int
-__new_semctl (int semid, int semnum, int cmd, ...)
+semctl (int semid, int semnum, int cmd, ...)
 {
   union semun arg;
   va_list ap;
