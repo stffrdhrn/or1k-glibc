@@ -71,8 +71,8 @@ ENTRY(__or1k_clone)
 
 .Lsetpid:
 	l.addi r3, r10, TP_TO_PTHREAD_OFFSET
-	l.sw PTHREAD_PID_OFFSET(r3), r11
-	l.sw PTHREAD_TID_OFFSET(r3), r11
+	l.sw PID_OFFSET(r3), r11
+	l.sw TID_OFFSET(r3), r11
 	
 
 .Loldpid:

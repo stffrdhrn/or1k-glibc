@@ -3,7 +3,6 @@
 .type syscall,%function
 .align 4
 syscall: 
-  .cfi_sections .debug_frame
   .cfi_startproc
 
   l.ori r11, r3, 0
