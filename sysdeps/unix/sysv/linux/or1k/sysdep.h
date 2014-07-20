@@ -21,7 +21,7 @@
 #include <sys/syscall.h>
 
 #undef SYS_ify
-#define SYS_ify(syscall_name)	(__NR_##syscall_name)
+#define SYS_ify(syscall_name)   (__NR_##syscall_name)
 
 /* Or1k uses 0x2000 as page size */
 #define MMAP_PAGE_SHIFT 13
@@ -92,51 +92,51 @@
 
 #undef INLINE_SYSCALL
 #define INLINE_SYSCALL(name, nr, args...) \
-	({									\
-	 unsigned int resultvar = INTERNAL_SYSCALL (name, , nr, args);		\
-	 if (__builtin_expect (INTERNAL_SYSCALL_ERROR_P (resultvar, ), 0))	\
-	   {									\
-	     __set_errno (INTERNAL_SYSCALL_ERRNO (resultvar, ));		\
-	     resultvar = 0xffffffff;						\
-	   }									\
-	 (int) resultvar; })
+        ({                                                                     \
+         unsigned int resultvar = INTERNAL_SYSCALL (name, , nr, args);         \
+         if (__builtin_expect (INTERNAL_SYSCALL_ERROR_P (resultvar, ), 0))     \
+           {                                                                   \
+             __set_errno (INTERNAL_SYSCALL_ERRNO (resultvar, ));               \
+             resultvar = 0xffffffff;                                           \
+           }                                                                   \
+         (int) resultvar; })
 
 #undef INTERNAL_SYSCALL
 #define INTERNAL_SYSCALL(name, err, nr, args...) \
-	({ unsigned long __sys_result;						\
-	  {									\
-	    register long __sc_ret __asm__ ("r11") = SYS_ify (name);		\
-	    LOAD_ARGS_##nr (args)						\
-	    __asm__ __volatile__ ("l.sys     1"					\
-					   : "=r" (__sc_ret) ASM_ARGS_OUT_##nr	\
-					   : "0" (__sc_ret) ASM_ARGS_IN_##nr	\
-			 : ASM_CLOBBERS_##nr					\
-			   "r12", "r13", "r15", "r17", "r19",			\
-			   "r21", "r23", "r25", "r27", "r29",			\
-			   "r31", "memory");					\
-	    __asm__ __volatile__ ("l.nop");					\
-	    __sys_result = __sc_ret;						\
-	  }									\
-	  (long) __sys_result; })
+        ({ unsigned long __sys_result;                                         \
+          {                                                                    \
+            register long __sc_ret __asm__ ("r11") = SYS_ify (name);           \
+            LOAD_ARGS_##nr (args)                                              \
+            __asm__ __volatile__ ("l.sys     1"                                \
+                                           : "=r" (__sc_ret) ASM_ARGS_OUT_##nr \
+                                           : "0" (__sc_ret) ASM_ARGS_IN_##nr   \
+                         : ASM_CLOBBERS_##nr                                   \
+                           "r12", "r13", "r15", "r17", "r19",                  \
+                           "r21", "r23", "r25", "r27", "r29",                  \
+                           "r31", "memory");                                   \
+            __asm__ __volatile__ ("l.nop");                                    \
+            __sys_result = __sc_ret;                                           \
+          }                                                                    \
+          (long) __sys_result; })
 
 /* The _NCS variant allows non-constant syscall numbers.  */
 #undef INTERNAL_SYSCALL_NCS
 #define INTERNAL_SYSCALL_NCS(name, err, nr, args...) \
-	({ unsigned long __sys_result;						\
-	  {									\
-	    register long __sc_ret __asm__ ("r11") = name;			\
-	    LOAD_ARGS_##nr (args)						\
-	    __asm__ __volatile__ ("l.sys     1"					\
-					   : "=r" (__sc_ret) ASM_ARGS_OUT_##nr	\
-					   : "0" (__sc_ret) ASM_ARGS_IN_##nr	\
-			 : ASM_CLOBBERS_##nr					\
-			   "r12", "r13", "r15", "r17", "r19",			\
-			   "r21", "r23", "r25", "r27", "r29",			\
-			   "r31", "memory");					\
-	    __asm__ __volatile__ ("l.nop");					\
-	    __sys_result = __sc_ret;						\
-	  }									\
-	  (long) __sys_result; })
+        ({ unsigned long __sys_result;                                         \
+          {                                                                    \
+            register long __sc_ret __asm__ ("r11") = name;                     \
+            LOAD_ARGS_##nr (args)                                              \
+            __asm__ __volatile__ ("l.sys     1"                                \
+                                           : "=r" (__sc_ret) ASM_ARGS_OUT_##nr \
+                                           : "0" (__sc_ret) ASM_ARGS_IN_##nr   \
+                         : ASM_CLOBBERS_##nr                                   \
+                           "r12", "r13", "r15", "r17", "r19",                  \
+                           "r21", "r23", "r25", "r27", "r29",                  \
+                           "r31", "memory");                                   \
+            __asm__ __volatile__ ("l.nop");                                    \
+            __sys_result = __sc_ret;                                           \
+          }                                                                    \
+          (long) __sys_result; })
 
 /* INTERNAL_SYSCALL_DECL - Allows us to setup some function static
    value to use within the context of the syscall.
