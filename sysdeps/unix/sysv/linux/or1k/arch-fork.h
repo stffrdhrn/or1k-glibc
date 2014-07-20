@@ -26,5 +26,3 @@
   INLINE_SYSCALL (clone, 5,						\
 		  CLONE_CHILD_SETTID | CLONE_CHILD_CLEARTID | SIGCHLD,	\
 		  NULL, NULL, &THREAD_SELF->tid, NULL)
-
-#include <nptl/sysdeps/unix/sysv/linux/fork.c>

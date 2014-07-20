@@ -54,15 +54,15 @@
   DO_CALL(syscall_name); \
   /* if -4096 < ret < 0 holds, it's an error */ \
   l.sfgeui r11, 0xf001; \
-  l.bf 0f; \
-  l.nop
+  l.bf L(pseudo_end); \
+   l.nop
 
 #define PSEUDO_NOERRNO(name, syscall_name, args)  \
   ENTRY (name);           \
   DO_CALL(syscall_name)
 
 #define PSEUDO_END(name) \
-0: \
+L(pseudo_end): \
   l.j SYSCALL_ERROR_NAME; \
   l.ori r3,r11,0; \
   END (name)

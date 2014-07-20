@@ -1,7 +1,6 @@
-/* Assembler macros for OR1k.
-   Copyright (C) 1997, 1998, 2003, 2009, 2010, 2012
-   Free Software Foundation, Inc.
+/* Copyright (C) 2011-2014 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
+   Contributed by Chris Metcalf <cmetcalf@tilera.com>, 2011.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -20,69 +19,44 @@
 #include <sysdeps/generic/sysdep.h>
 #include <features.h>
 
-/* TODO: clean up this file */
-#ifdef	__ASSEMBLER__
+#if defined __ASSEMBLER__ || defined REQUEST_ASSEMBLER_MACROS
 
-/* Syntactic details of assembler.  */
-
-#define ALIGNARG(log2) log2
-#define ASM_SIZE_DIRECTIVE(name) .size name,.-name
-
-#define PLTJMP(_x)	_x##(PLT)
-
-#define RETINSTR(cond, reg)	\
-	mov##cond	pc, reg
-#define DO_RET(_reg)		\
-	.jr _reg
+/* Make use of .size directive.  */
+#define ASM_SIZE_DIRECTIVE(name) .size name,.-name;
 
 /* Define an entry point visible from C.  */
-#define	ENTRY(name)							      \
-  .globl C_SYMBOL_NAME(name);						      \
-  .type C_SYMBOL_NAME(name),%function;					      \
-  .align ALIGNARG(4);							      \
-  C_LABEL(name)								      \
-  .cfi_sections .debug_frame;						      \
-  cfi_startproc;							      \
+#define ENTRY(name)                                                           \
+  .globl C_SYMBOL_NAME(name);                                                 \
+  .type C_SYMBOL_NAME(name),@function;                                        \
+  .align 4;                                                                   \
+  C_LABEL(name)                                                               \
+  cfi_startproc;                                                              \
   CALL_MCOUNT
 
-#undef	END
-#define END(name)							      \
-  cfi_endproc;								      \
+#undef  END
+#define END(name)                                                             \
+  cfi_endproc;                                                                \
   ASM_SIZE_DIRECTIVE(name)
-
-/* If compiled for profiling, call `mcount' at the start of each function.  */
-#ifdef	PROF
-/* Call __gnu_mcount_nc if GCC >= 4.4.  */
-#if __GNUC_PREREQ(4,4)
-#define CALL_MCOUNT \
-  str	lr,[sp, #-4]!; \
-  cfi_adjust_cfa_offset (4); \
-  cfi_rel_offset (lr, 0); \
-  bl PLTJMP(mcount); \
-  cfi_adjust_cfa_offset (-4); \
-  cfi_restore (lr)
-#else /* else call _mcount */
-#define CALL_MCOUNT \
-  str	lr,[sp, #-4]!; \
-  cfi_adjust_cfa_offset (4); \
-  cfi_rel_offset (lr, 0); \
-  bl PLTJMP(mcount); \
-  ldr lr, [sp], #4; \
-  cfi_adjust_cfa_offset (-4); \
-  cfi_restore (lr)
-#endif
-#else
-#define CALL_MCOUNT		/* Do nothing.  */
-#endif
 
 /* Since C identifiers are not normally prefixed with an underscore
    on this system, the asm identifier `syscall_error' intrudes on the
    C name space.  Make sure we use an innocuous name.  */
-#define	syscall_error	__syscall_error
-#if __GNUC_PREREQ(4,4)
-#define mcount		__gnu_mcount_nc
+#define syscall_error   __syscall_error
+#define mcount          __mcount
+
+/* If compiled for profiling, call `mcount' at the start of each function.
+   The mcount code requires the caller PC in r10.  The `mcount' function
+   sets lr back to the value r10 had on entry when it returns.  */
+#ifdef  PROF
+#error "No profiling support"
 #else
-#define mcount		_mcount
+#define CALL_MCOUNT             /* Do nothing.  */
 #endif
 
-#endif	/* __ASSEMBLER__ */
+/* Local label name for asm code. */
+#define L(name)         .L##name
+
+/* Specify the size in bytes of a machine register.  */
+#define REGSIZE         4
+
+#endif /* __ASSEMBLER__ */

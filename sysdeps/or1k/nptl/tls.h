@@ -75,6 +75,7 @@ register tcbhead_t *__thread_self __asm__("r10");
  * See _dl_allocate_tls_storage and __libc_setup_tls for more information.
  */
 # define TLS_DTV_AT_TP  1
+# define TLS_TCB_AT_TP  0
 
 /* Get the thread descriptor definition.  */
 # include <nptl/descr.h>
@@ -125,13 +126,10 @@ register tcbhead_t *__thread_self __asm__("r10");
  * Set TP to the address _after_ tcbhead_t. This will allow us
  * to change the size of tcbhead_t without having to re-link everything.
  *
- * secondcall has something to do with USE__THREAD,
- * seems to always be 0 so we don't care about it.
- *
  * This has to return NULL on success (or a string with the failure text).
  * It's hard to fail this, so return NULL always.
  */
-# define TLS_INIT_TP(tcbp, secondcall) \
+# define TLS_INIT_TP(tcbp) \
   ({__thread_self = ((tcbhead_t *)tcbp + 1); NULL;})
 
 /* Return the address of the dtv for the current thread.
