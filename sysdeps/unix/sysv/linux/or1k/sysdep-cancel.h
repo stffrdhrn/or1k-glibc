@@ -36,8 +36,21 @@ ENTRY(name);                                                                  \
   l.sfeq  r13,r0;                                                             \
   l.bnf   L(pseudo_nocancel);                                                 \
    l.nop;                                                                     \
-  l.j     L(pseudo_nocancel);                                                 \
-   l.nop;                                                                     \
+  /* Reserve the same amount of stack space, effectivly disregarding          \
+   * how many args we're supposed to push. This makes the code easier. */     \
+  l.addi  r1,r1,-28;                                                          \
+  cfi_adjust_cfa_offset(28);                                                  \
+  PUSHARGS_##args; /* CENABLE is a function call, save args for syscall. */   \
+  CENABLE;                                                                    \
+  l.sw    24(r1),r11;                                                         \
+  POPARGS_##args;                                                             \
+  DO_CALL(syscall_name);                                                      \
+  l.lwz   r3,24(r1); /* pass return value from CENABLE to CDISABLE. */        \
+  l.sw    24(r1),r11; /* save syscall return value for after CDISABLE. */     \
+  CDISABLE;                                                                   \
+  l.lwz   r11,24(r1); /* restore syscall return value. */                     \
+  cfi_adjust_cfa_offset(-28);                                                 \
+  l.addi  r1,r1,28;                                                           \
 L(pseudo_finish):                                                             \
   /* if -4096 < ret < 0 holds, it's an error */                               \
   l.sfgeui r11,0xf001;                                                        \
@@ -52,50 +65,20 @@ L(pseudo_end): \
   END(name)
 
 # define PUSHARGS_0     /* nothing to do */
-# define PUSHARGS_1     PUSHARGS_0 sw a0, 0(sp); cfi_rel_offset (a0, 0);
-# define PUSHARGS_2     PUSHARGS_1 sw a1, 4(sp); cfi_rel_offset (a1, 4);
-# define PUSHARGS_3     PUSHARGS_2 sw a2, 8(sp); cfi_rel_offset (a2, 8);
-# define PUSHARGS_4     PUSHARGS_3 sw a3, 12(sp); cfi_rel_offset (a3, 12);
-# define PUSHARGS_5     PUSHARGS_4 /* handled by SAVESTK_## */
-# define PUSHARGS_6     PUSHARGS_5
-# define PUSHARGS_7     PUSHARGS_6
+# define PUSHARGS_1     PUSHARGS_0 l.sw   0(r1),r3;
+# define PUSHARGS_2     PUSHARGS_1 l.sw   4(r1),r4;
+# define PUSHARGS_3     PUSHARGS_2 l.sw   8(r1),r5;
+# define PUSHARGS_4     PUSHARGS_3 l.sw   12(r1),r6;
+# define PUSHARGS_5     PUSHARGS_4 l.sw   16(r1),r7;
+# define PUSHARGS_6     PUSHARGS_5 l.sw   20(r1),r8;
 
 # define POPARGS_0      /* nothing to do */
-# define POPARGS_1      POPARGS_0 lw a0, 0(sp);
-# define POPARGS_2      POPARGS_1 lw a1, 4(sp);
-# define POPARGS_3      POPARGS_2 lw a2, 8(sp);
-# define POPARGS_4      POPARGS_3 lw a3, 12(sp);
-# define POPARGS_5      POPARGS_4 /* args already in new stackframe */
-# define POPARGS_6      POPARGS_5
-# define POPARGS_7      POPARGS_6
-
-
-# define STKSPACE       48
-# define SAVESTK_0      subu sp, STKSPACE; cfi_adjust_cfa_offset(STKSPACE)
-# define SAVESTK_1      SAVESTK_0
-# define SAVESTK_2      SAVESTK_1
-# define SAVESTK_3      SAVESTK_2
-# define SAVESTK_4      SAVESTK_3
-# define SAVESTK_5      lw t0, 16(sp);          \
-                        SAVESTK_0;              \
-                        sw t0, 16(sp)
-
-# define SAVESTK_6      lw t0, 16(sp);          \
-                        lw t1, 20(sp);          \
-                        SAVESTK_0;              \
-                        sw t0, 16(sp);          \
-                        sw t1, 20(sp)
-
-# define SAVESTK_7      lw t0, 16(sp);          \
-                        lw t1, 20(sp);          \
-                        lw t2, 24(sp);          \
-                        SAVESTK_0;              \
-                        sw t0, 16(sp);          \
-                        sw t1, 20(sp);          \
-                        sw t2, 24(sp)
-
-# define RESTORESTK     addu sp, STKSPACE; cfi_adjust_cfa_offset(-STKSPACE)
-
+# define POPARGS_1      POPARGS_0 l.lwz   r3,0(r1);
+# define POPARGS_2      POPARGS_1 l.lwz   r4,4(r1);
+# define POPARGS_3      POPARGS_2 l.lwz   r5,8(r1);
+# define POPARGS_4      POPARGS_3 l.lwz   r6,12(r1);
+# define POPARGS_5      POPARGS_4 l.lwz   r7,16(r1);
+# define POPARGS_6      POPARGS_5 l.lwz   r8,20(r1);
 
 # define PSEUDO_JMP(sym) l.jal sym; l.nop;
 
