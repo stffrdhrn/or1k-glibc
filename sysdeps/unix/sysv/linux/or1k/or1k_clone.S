@@ -22,11 +22,11 @@ ENTRY(__or1k_clone)
 	*/
 
 	/* Put 'fn', 'arg' and 'flags' on child stack */
-	l.sw  -4(r4), r3
-	l.sw  -8(r4), r6
-	l.sw  -12(r4), r5
+	l.addi r4, r4, -12
+	l.sw  8(r4), r3
+	l.sw  4(r4), r6
+	l.sw  0(r4), r5
 
-	/* Set all arguments */
 	l.ori r3, r5, 0
 	/* child_stack is already in r4 */
 	l.ori r5, r7, 0
@@ -36,57 +36,58 @@ ENTRY(__or1k_clone)
 	DO_CALL (clone)
 
 	l.sfgeui r11, 0xf001
-	l.bf .Lerror
-	l.nop
+	l.bf L(error)
+	 l.nop
 
 	/* If we are not the child, return the pid */
 	l.sfeqi r11, 0
-	l.bf .Lchild
-	l.nop
+	l.bf L(child)
+	 l.nop
 
 	l.jr r9
-	l.nop
+	 l.nop
 
-.Lchild:
+L(child):
 	/* Load flags */
-	l.lwz r3, -12(r1)
+	l.lwz r3, 0(r1)
 
-	/* Update PID, but only if we do not share the same PID 
+	/* Update PID, but only if we do not share the same PID
 	   as our parent */
 	l.srli  r4, r3, 16
 	l.andi r4, r4, hi(CLONE_THREAD)
 	l.sfnei r4, 0
-	l.bf .Loldpid
+	l.bf L(oldpid)
+	 l.nop
 
 	/* If we share the same memory space, reset the PID/TID values.
 	   Apparently getpid caches, so we want to make sure it's flushed */
 	l.ori r11, r0, -1
 	l.andi r4, r3, CLONE_VM
 	l.sfnei r4, 0
-	l.bf .Lsetpid
-	l.nop
+	l.bf L(setpid)
+	 l.nop
 
 	/* Else we update them */
 	DO_CALL (getpid)
 
-.Lsetpid:
+L(setpid):
 	l.addi r3, r10, TP_TO_PTHREAD_OFFSET
 	l.sw PID_OFFSET(r3), r11
 	l.sw TID_OFFSET(r3), r11
 	
 
-.Loldpid:
+L(oldpid):
 	/* Load function from stack */
-	l.lwz r9, -4(r1)
-	l.jr r9
-	l.lwz r3, -8(r1)
+	l.lwz r11, 8(r1)
+	l.jalr r11
+	 l.lwz r3, 4(r1)
 
 	/* Exit the child thread */
 	l.jal HIDDEN_JUMPTARGET(_exit)
-	l.ori r3, r11, 0
+	 l.ori r3, r11, 0
 
-.Lerror:
+L(error):
 	l.j SYSCALL_ERROR_NAME
-	l.ori r3,r11,0
+	 l.ori r3,r11,0
 
 PSEUDO_END (__or1k_clone)
