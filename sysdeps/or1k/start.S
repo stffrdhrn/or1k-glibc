@@ -68,7 +68,11 @@
 .global _start
 _start:
 
-#ifdef __PIC__
+  /* rtld_fini = the dynamic fini address.
+     This is set by dl-start.S or just plain NULL if called directly. */
+  l.ori r8, r9, 0
+
+#ifdef SHARED
   /* Obtain a pointer to .got in r16 */
   l.jal .LPC0
 #ifndef __OR1K_NODELAY__
@@ -95,7 +99,7 @@ _start:
   l.lwz  r4,0(r1)
   l.addi r5,r1,4
 
-#ifdef __PIC__
+#ifdef SHARED
   l.lwz r3,got(main)(r16)
 #else
   l.movhi r3,hi(main)
@@ -104,7 +108,7 @@ _start:
 
   /* Put the constructor and destructor initialization as args four and
      five into r6 and r7 */
-#ifdef __PIC__
+#ifdef SHARED
   l.lwz r6, got(__libc_csu_init)(r16)
   l.lwz r7, got(__libc_csu_fini)(r16)
 #else
@@ -113,10 +117,6 @@ _start:
   l.movhi r7,hi(__libc_csu_fini)
   l.ori r7,r7,lo(__libc_csu_fini)
 #endif
-
-  /* rtld_fini = the dynamic fini address.
-     This is set by dl-start.S or just plain NULL if called directly. */
-  l.ori r8, r9, 0
 
   /* Adjust stack to account for a total of 7 args (i.e. the last one is
      on the stack. */
@@ -129,7 +129,7 @@ _start:
   l.add r9,r0,r0
 
   /* Let the libc call main and exit with its return code.  */
-#ifdef __PIC__
+#ifdef SHARED
   l.j plt(__libc_start_main)
 #else
   l.j __libc_start_main

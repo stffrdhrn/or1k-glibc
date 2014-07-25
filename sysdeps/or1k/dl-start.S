@@ -94,9 +94,7 @@ _dl_start_user:
   /* Load termination function address
      Pass this in r9 to the _start function.
      start.S will then pass this to __libc_start_main. */
-  l.movhi r9, gotoffhi(_dl_fini)
-  l.ori r9, r9, gotofflo(_dl_fini)
-  l.add r9, r9, r16
+  l.lwz r9, got(_dl_fini)(r16)
 
   l.jr  r22
   l.nop
