@@ -132,6 +132,10 @@ register tcbhead_t *__thread_self __asm__("r10");
 # define TLS_INIT_TP(tcbp) \
   ({__thread_self = ((tcbhead_t *)tcbp + 1); NULL;})
 
+/* Value passed to 'clone' for initialization of the thread register.  */
+# define TLS_DEFINE_INIT_TP(tp, pd) \
+  void *tp = ((char *) pd + TLS_PRE_TCB_SIZE + TLS_INIT_TCB_SIZE)
+
 /* Return the address of the dtv for the current thread.
  *
  * Dereference TP, offset to dtv - really straightforward.
