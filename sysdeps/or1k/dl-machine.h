@@ -243,7 +243,6 @@ elf_machine_rela (struct link_map *map, const Elf32_Rela *reloc,
 	      ((struct unaligned *) reloc_addr)->x = value + reloc->r_addend;
 	      break;
 	    }
-	  case R_OR1K_INSN_REL_26:
 	  case R_OR1K_GLOB_DAT:
 	  case R_OR1K_JMP_SLOT:
 	    *reloc_addr = value + reloc->r_addend;
