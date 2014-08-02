@@ -1,0 +1,92 @@
+#include <sysdep.h>
+#include <linux/sched.h>
+#include <tls.h>
+
+.text
+ENTRY(__or1k_clone)
+
+	/* To handle GCC varargs we need to use our __clone wrapper to pop
+	   everything from the stack for us.
+	   Now everything is placed in the registers which saves us a lot 
+	   of trouble.
+
+	   The userland implementation is:
+		  int clone (int (*fn)(void *), void *child_stack,
+			    int flags, void *arg, pid_t *ptid,
+			    struct user_desc *tls, pid_t *ctid);
+
+	     The kernel entry is:
+		  int clone (long flags, void *child_stack, int *parent_tid,
+			  int *child_tid, struct void *tls)
+	     NB: tls isn't really an argument, it is read from r7 directly.
+	*/
+
+	/* Put 'fn', 'arg' and 'flags' on child stack */
+	l.addi r4, r4, -12
+	l.sw  8(r4), r3
+	l.sw  4(r4), r6
+	l.sw  0(r4), r5
+
+	l.ori r3, r5, 0
+	/* child_stack is already in r4 */
+	l.ori r5, r7, 0
+	l.lwz r6, 0(r1)
+	l.ori r7, r8, 0
+
+	DO_CALL (clone)
+
+	l.sfgeui r11, 0xf001
+	l.bf .Lerror
+	l.nop
+
+	/* If we are not the child, return the pid */
+	l.sfeqi r11, 0
+	l.bf .Lchild
+	l.nop
+
+	l.jr r9
+	l.nop
+
+.Lchild:
+	/* Load flags */
+	l.lwz r3, -12(r1)
+
+	/* Update PID, but only if we do not share the same PID 
+	   as our parent */
+	l.srli  r4, r3, 16
+	l.andi r4, r4, hi(CLONE_THREAD)
+	l.sfnei r4, 0
+	l.bf .Loldpid
+
+	/* If we share the same memory space, reset the PID/TID values.
+	   Apparently getpid caches, so we want to make sure it's flushed */
+	l.ori r11, r0, -1
+	l.andi r4, r3, CLONE_VM
+	l.sfnei r4, 0
+	l.bf .Lsetpid
+	l.nop
+
+	/* Else we update them */
+	DO_CALL (getpid)
+
+.Lsetpid:
+	l.addi r3, r10, TP_TO_PTHREAD_OFFSET
+	l.sw PID_OFFSET(r3), r11
+	l.sw TID_OFFSET(r3), r11
+	
+
+.Loldpid:
+	/* Load function from stack */
+	l.lwz r9, -4(r1)
+	l.jr r9
+	l.lwz r3, -8(r1)
+
+	/* Exit the child thread */
+	l.jal HIDDEN_JUMPTARGET(_exit)
+	l.ori r3, r11, 0
+
+.Lerror:
+	l.j SYSCALL_ERROR_NAME
+	l.ori r3,r11,0
+
+PSEUDO_END (__or1k_clone)

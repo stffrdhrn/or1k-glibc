@@ -1,0 +1,716 @@
+diff --git a/ports/sysdeps/or1k/__longjmp.S b/ports/sysdeps/or1k/__longjmp.S
+index 6656405..cc1ecf7 100644
+--- a/ports/sysdeps/or1k/__longjmp.S
++++ glibc-2.19/ports/sysdeps/or1k/__longjmp.S
+@@ -2,7 +2,7 @@
+ 
+    Based on:
+    longjmp for PowerPC.
+-   Copyright (C) 1995, 1996, 1997, 1999, 2000 Free Software Foundation, Inc.
++   Copyright (C) 2014 Free Software Foundation, Inc.
+    This file is part of the GNU C Library.
+ 
+    The GNU C Library is free software; you can redistribute it and/or
+@@ -27,11 +27,11 @@
+ 
+ .globl     __longjmp;
+ .type      __longjmp,@function;
+-.align     2;
++.align     4;
+ 
+-__longjmp:    
+-  l.lwz   r1,((JB_GPRS+0)*4)(r3)
+-  l.lwz   r2,((JB_GPRS+1)*4)(r3)
++__longjmp:
++  l.lwz   r1,0(r3)
++  l.lwz   r2,4(r3)
+ 
+   /* if r4 is 0, something wrong, so set it to 1 */
+   l.sfeqi r4, 0x0
+@@ -40,36 +40,19 @@ __longjmp:
+   l.ori   r4, r0, 0x1 /* make nonzero */
+ 1:
+   l.addi  r11, r4, 0
+-  l.lwz   r4,((JB_GPRS+3)*4)(r3)
+-  l.lwz   r5,((JB_GPRS+4)*4)(r3)
+-  l.lwz   r6,((JB_GPRS+5)*4)(r3)
+-  l.lwz   r7,((JB_GPRS+6)*4)(r3)
+-  l.lwz   r8,((JB_GPRS+7)*4)(r3)
+-  l.lwz   r9,((JB_GPRS+8)*4)(r3)
+-  l.lwz   r10,((JB_GPRS+9)*4)(r3)
+-  l.lwz   r12,((JB_GPRS+11)*4)(r3)
+-  l.lwz   r13,((JB_GPRS+12)*4)(r3)
+-  l.lwz   r14,((JB_GPRS+13)*4)(r3)
+-  l.lwz   r15,((JB_GPRS+14)*4)(r3)
+-  l.lwz   r16,((JB_GPRS+15)*4)(r3)
+-  l.lwz   r17,((JB_GPRS+16)*4)(r3)
+-  l.lwz   r18,((JB_GPRS+17)*4)(r3)
+-  l.lwz   r19,((JB_GPRS+18)*4)(r3)
+-  l.lwz   r20,((JB_GPRS+19)*4)(r3)
+-  l.lwz   r21,((JB_GPRS+20)*4)(r3)
+-  l.lwz   r22,((JB_GPRS+21)*4)(r3)
+-  l.lwz   r23,((JB_GPRS+22)*4)(r3)
+-  l.lwz   r24,((JB_GPRS+23)*4)(r3)
+-  l.lwz   r25,((JB_GPRS+24)*4)(r3)
+-  l.lwz   r26,((JB_GPRS+25)*4)(r3)
+-  l.lwz   r27,((JB_GPRS+26)*4)(r3)
+-  l.lwz   r28,((JB_GPRS+27)*4)(r3)
+-  l.lwz   r29,((JB_GPRS+28)*4)(r3)
+-  l.lwz   r30,((JB_GPRS+29)*4)(r3)
+-  l.lwz   r31,((JB_GPRS+30)*4)(r3)
++  l.lwz   r9,8(r3)
++  l.lwz   r10,12(r3)
++  l.lwz   r14,16(r3)
++  l.lwz   r16,20(r3)
++  l.lwz   r18,24(r3)
++  l.lwz   r20,28(r3)
++  l.lwz   r22,32(r3)
++  l.lwz   r24,36(r3)
++  l.lwz   r26,40(r3)
++  l.lwz   r28,44(r3)
++  l.lwz   r30,48(r3)
+   l.jr  r9
+   l.nop
+ .size     __longjmp,.-__longjmp
+ 
+ libc_hidden_def(__longjmp)
+-
+diff --git a/ports/sysdeps/or1k/bits/atomic.h b/ports/sysdeps/or1k/bits/atomic.h
+new file mode 100644
+index 0000000..cad6177
+--- /dev/null
++++ glibc-2.19/ports/sysdeps/or1k/bits/atomic.h
+@@ -0,0 +1,171 @@
++/* Copyright (C) 2003-2014 Free Software Foundation, Inc.
++
++   This file is part of the GNU C Library.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library.  If not, see
++   <http://www.gnu.org/licenses/>.  */
++
++#ifndef _OR1K_BITS_ATOMIC_H
++#define _OR1K_BITS_ATOMIC_H	1
++
++#include <stdint.h>
++
++typedef int8_t  atomic8_t;
++typedef int16_t atomic16_t;
++typedef int32_t atomic32_t;
++typedef int64_t atomic64_t;
++
++typedef uint8_t  uatomic8_t;
++typedef uint16_t uatomic16_t;
++typedef uint32_t uatomic32_t;
++typedef uint64_t uatomic64_t;
++
++typedef intptr_t atomicptr_t;
++typedef uintptr_t uatomicptr_t;
++typedef intmax_t atomic_max_t;
++typedef uintmax_t uatomic_max_t;
++
++
++/* Compare and exchange.
++   For all "bool" routines, we return FALSE if exchange succesful.  */
++
++# define __arch_compare_and_exchange_bool_8_int(mem, newval, oldval, model) \
++  ({									\
++    typeof (*mem) __oldval = (oldval);					\
++    !__atomic_compare_exchange_n (mem, (void *) &__oldval, newval, 0,	\
++				  model, __ATOMIC_RELAXED);		\
++  })
++
++# define __arch_compare_and_exchange_bool_16_int(mem, newval, oldval, model) \
++  ({									\
++    typeof (*mem) __oldval = (oldval);					\
++    !__atomic_compare_exchange_n (mem, (void *) &__oldval, newval, 0,	\
++				  model, __ATOMIC_RELAXED);		\
++  })
++
++# define __arch_compare_and_exchange_bool_32_int(mem, newval, oldval, model) \
++  ({									\
++    typeof (*mem) __oldval = (oldval);					\
++    !__atomic_compare_exchange_n (mem, (void *) &__oldval, newval, 0,	\
++				  model, __ATOMIC_RELAXED);		\
++  })
++
++#  define __arch_compare_and_exchange_bool_64_int(mem, newval, oldval, model) \
++  ({									\
++    typeof (*mem) __oldval = (oldval);					\
++    !__atomic_compare_exchange_n (mem, (void *) &__oldval, newval, 0,	\
++				  model, __ATOMIC_RELAXED);		\
++  })
++
++# define __arch_compare_and_exchange_val_8_int(mem, newval, oldval, model) \
++  ({									\
++    typeof (*mem) __oldval = (oldval);					\
++    __atomic_compare_exchange_n (mem, (void *) &__oldval, newval, 0,	\
++				 model, __ATOMIC_RELAXED);		\
++    __oldval;								\
++  })
++
++# define __arch_compare_and_exchange_val_16_int(mem, newval, oldval, model) \
++  ({									\
++    typeof (*mem) __oldval = (oldval);					\
++    __atomic_compare_exchange_n (mem, (void *) &__oldval, newval, 0,	\
++				 model, __ATOMIC_RELAXED);		\
++    __oldval;								\
++  })
++
++# define __arch_compare_and_exchange_val_32_int(mem, newval, oldval, model) \
++  ({									\
++    typeof (*mem) __oldval = (oldval);					\
++    __atomic_compare_exchange_n (mem, (void *) &__oldval, newval, 0,	\
++				 model, __ATOMIC_RELAXED);		\
++    __oldval;								\
++  })
++
++#  define __arch_compare_and_exchange_val_64_int(mem, newval, oldval, model) \
++  ({									\
++    typeof (*mem) __oldval = (oldval);					\
++    __atomic_compare_exchange_n (mem, (void *) &__oldval, newval, 0,	\
++				 model, __ATOMIC_RELAXED);		\
++    __oldval;								\
++  })
++
++
++/* Compare and exchange with "acquire" semantics, ie barrier after.  */
++
++# define atomic_compare_and_exchange_bool_acq(mem, new, old)	\
++  __atomic_bool_bysize (__arch_compare_and_exchange_bool, int,	\
++			mem, new, old, __ATOMIC_ACQUIRE)
++
++# define atomic_compare_and_exchange_val_acq(mem, new, old)	\
++  __atomic_val_bysize (__arch_compare_and_exchange_val, int,	\
++		       mem, new, old, __ATOMIC_ACQUIRE)
++
++/* Compare and exchange with "release" semantics, ie barrier before.  */
++
++# define atomic_compare_and_exchange_bool_rel(mem, new, old)	\
++  __atomic_bool_bysize (__arch_compare_and_exchange_bool, int,	\
++			mem, new, old, __ATOMIC_RELEASE)
++
++# define atomic_compare_and_exchange_val_rel(mem, new, old)	 \
++  __atomic_val_bysize (__arch_compare_and_exchange_val, int,    \
++                       mem, new, old, __ATOMIC_RELEASE)
++
++
++/* Atomic exchange (without compare).  */
++
++# define __arch_exchange_8_int(mem, newval, model)	\
++  __atomic_exchange_n (mem, newval, model)
++
++# define __arch_exchange_16_int(mem, newval, model)	\
++  __atomic_exchange_n (mem, newval, model)
++
++# define __arch_exchange_32_int(mem, newval, model)	\
++  __atomic_exchange_n (mem, newval, model)
++
++#  define __arch_exchange_64_int(mem, newval, model)	\
++  __atomic_exchange_n (mem, newval, model)
++
++# define atomic_exchange_acq(mem, value)				\
++  __atomic_val_bysize (__arch_exchange, int, mem, value, __ATOMIC_ACQUIRE)
++
++# define atomic_exchange_rel(mem, value)				\
++  __atomic_val_bysize (__arch_exchange, int, mem, value, __ATOMIC_RELEASE)
++
++
++/* Atomically add value and return the previous (unincremented) value.  */
++
++# define __arch_exchange_and_add_8_int(mem, value, model)	\
++  __atomic_fetch_add (mem, value, model)
++
++# define __arch_exchange_and_add_16_int(mem, value, model)	\
++  __atomic_fetch_add (mem, value, model)
++
++# define __arch_exchange_and_add_32_int(mem, value, model)	\
++  __atomic_fetch_add (mem, value, model)
++
++#  define __arch_exchange_and_add_64_int(mem, value, model)	\
++  __atomic_fetch_add (mem, value, model)
++
++# define atomic_exchange_and_add_acq(mem, value)			\
++  __atomic_val_bysize (__arch_exchange_and_add, int, mem, value,	\
++		       __ATOMIC_ACQUIRE)
++
++# define atomic_exchange_and_add_rel(mem, value)			\
++  __atomic_val_bysize (__arch_exchange_and_add, int, mem, value,	\
++		       __ATOMIC_RELEASE)
++
++/* Barrier macro. */
++#define atomic_full_barrier() __sync_synchronize()
++
++#endif
+diff --git a/ports/sysdeps/or1k/bits/setjmp.h b/ports/sysdeps/or1k/bits/setjmp.h
+index 6c1faea..f8cf7ae 100644
+--- a/ports/sysdeps/or1k/bits/setjmp.h
++++ glibc-2.19/ports/sysdeps/or1k/bits/setjmp.h
+@@ -1,4 +1,4 @@
+-/* Copyright (C) 1997, 1998, 2000 Free Software Foundation, Inc.
++/* Copyright (C) 2014 Free Software Foundation, Inc.
+    This file is part of the GNU C Library.
+ 
+    The GNU C Library is free software; you can redistribute it and/or
+@@ -26,16 +26,11 @@
+ #endif
+ 
+ #if defined __USE_MISC || defined _ASM
+-# define JB_SR     0  /* To save flag */
+-# define JB_GPRS   1  /* Starting with GPR1, we don't save r0 - this is special register - allways zero */
+-# define JB_SP     1  /* GPR1 */
+-# define JB_LR     9  /* GPR9 */
+-# define JB_RV     11 /* GPR11 */
+-# define JB_SIZE   (32*4)
++# define JB_SP     0  /* GPR1 */
+ #endif
+ 
+ #ifndef _ASM
+-typedef long int __jmp_buf[32];
++typedef long int __jmp_buf[13];
+ #endif
+ 
+ /* Test if longjmp to JMPBUF would unwind the frame
+@@ -44,4 +39,3 @@ typedef long int __jmp_buf[32];
+   ((void *) (address) < (void *) (jmpbuf)[JB_SP])
+ 
+ #endif
+-
+diff --git a/ports/sysdeps/or1k/crtn.S b/ports/sysdeps/or1k/crtn.S
+index 28efe6a..1f40959 100644
+--- a/ports/sysdeps/or1k/crtn.S
++++ glibc-2.19/ports/sysdeps/or1k/crtn.S
+@@ -21,14 +21,14 @@
+ # <http://www.gnu.org/licenses/>.
+ 
+   .section .init
+-__init:
++_init:
+   l.lwz r9,0(r1)
+   l.lwz r16,4(r1)
+   l.jr  r9
+   l.addi  r1,r1,8
+ 
+   .section .fini
+-__fini:
++_fini:
+   l.lwz r9,0(r1)
+   l.jr  r9
+   l.addi  r1,r1,4
+diff --git a/ports/sysdeps/or1k/dl-start.S b/ports/sysdeps/or1k/dl-start.S
+index 2eeb3bf..ea3937d 100644
+--- a/ports/sysdeps/or1k/dl-start.S
++++ glibc-2.19/ports/sysdeps/or1k/dl-start.S
+@@ -81,8 +81,6 @@ _dl_start_user:
+ 
+      argc = 0(r1)
+      argv = r1 + 4
+-
+-     Also, uClibc code sets r9 to _dl_fini, so we continue to do so.
+   */
+ 
+   /* Load SP as argv - 4*/
+@@ -93,7 +91,9 @@ _dl_start_user:
+   l.lwz r3, 0(r18)
+   l.sw 0(r1), r3
+ 
+-  /* Load termination function address */
++  /* Load termination function address
++     Pass this in r9 to the _start function.
++     start.S will then pass this to __libc_start_main. */
+   l.movhi r9, gotoffhi(_dl_fini)
+   l.ori r9, r9, gotofflo(_dl_fini)
+   l.add r9, r9, r16
+diff --git a/ports/sysdeps/or1k/jmpbuf-offsets.h b/ports/sysdeps/or1k/jmpbuf-offsets.h
+index b725678..040c411 100644
+--- a/ports/sysdeps/or1k/jmpbuf-offsets.h
++++ glibc-2.19/ports/sysdeps/or1k/jmpbuf-offsets.h
+@@ -1,5 +1,5 @@
+-/* Private macros for accessing __jmp_buf contents.  ARM EABI version.
+-   Copyright (C) 2007 Free Software Foundation, Inc.
++/* Private macros for accessing __jmp_buf contents.  or1k version.
++   Copyright (C) 2014 Free Software Foundation, Inc.
+    This file is part of the GNU C Library.
+ 
+    The GNU C Library is free software; you can redistribute it and/or
+@@ -16,7 +16,7 @@
+    License along with the GNU C Library.  If not, see
+    <http://www.gnu.org/licenses/>.  */
+ 
+-#define __JMP_BUF_SP		1
++#define __JMP_BUF_SP    0
+ 
+ /* Helper for generic ____longjmp_chk(). */
+ #define JB_FRAME_ADDRESS(buf) \
+diff --git a/ports/sysdeps/or1k/setjmp.S b/ports/sysdeps/or1k/setjmp.S
+index 4c02144..7adc406 100644
+--- a/ports/sysdeps/or1k/setjmp.S
++++ glibc-2.19/ports/sysdeps/or1k/setjmp.S
+@@ -2,7 +2,7 @@
+ 
+    Based on:
+    setjmp for PowerPC.
+-   Copyright (C) 1995, 1996, 1997, 1999, 2000 Free Software Foundation, Inc.
++   Copyright (C) 2014 Free Software Foundation, Inc.
+    This file is part of the GNU C Library.
+ 
+    The GNU C Library is free software; you can redistribute it and/or
+@@ -26,55 +26,34 @@
+ #include <bits/setjmp.h>
+ 
+ ENTRY (_setjmp)
+-	l.addi	r4,r0,0			/* Set second argument to 0.  */
+-	l.j	.Local__sigsetjmp
+-	l.nop
++  l.addi  r4,r0,0     /* Set second argument to 0.  */
++  l.j .Local__sigsetjmp
++  l.nop
+ END (_setjmp)
+ libc_hidden_def (_setjmp)
+ 
+ ENTRY (setjmp)
+-	l.addi	r4,r0,1			/* Set second argument to 1.  */
+-	l.j	.Local__sigsetjmp
+-	l.nop
++  l.addi  r4,r0,1     /* Set second argument to 1.  */
++  l.j .Local__sigsetjmp
++  l.nop
+ END (setjmp)
+ 
+ ENTRY (__sigsetjmp)
+ .Local__sigsetjmp:
+-#	l.mfspr	r11,r0,SPR_SR
+-#	l.sw    (JB_SR*4)(r3),r11
+-	l.sw    ((JB_GPRS+0)*4)(r3),r1
+-	l.sw    ((JB_GPRS+1)*4)(r3),r2
+-/*	l.sw    ((JB_GPRS+2)*4)(r3),r3*/
+-	l.sw    ((JB_GPRS+3)*4)(r3),r4
+-	l.sw    ((JB_GPRS+4)*4)(r3),r5
+-	l.sw    ((JB_GPRS+5)*4)(r3),r6
+-	l.sw    ((JB_GPRS+6)*4)(r3),r7
+-	l.sw    ((JB_GPRS+7)*4)(r3),r8
+-	l.sw    ((JB_GPRS+8)*4)(r3),r9
+-	l.sw    ((JB_GPRS+9)*4)(r3),r10
+-	l.sw    ((JB_GPRS+10)*4)(r3),r11
+-	l.sw    ((JB_GPRS+11)*4)(r3),r12
+-	l.sw    ((JB_GPRS+12)*4)(r3),r13
+-	l.sw    ((JB_GPRS+13)*4)(r3),r14
+-	l.sw    ((JB_GPRS+14)*4)(r3),r15
+-	l.sw    ((JB_GPRS+15)*4)(r3),r16
+-	l.sw    ((JB_GPRS+16)*4)(r3),r17
+-	l.sw    ((JB_GPRS+17)*4)(r3),r18
+-	l.sw    ((JB_GPRS+18)*4)(r3),r19
+-	l.sw    ((JB_GPRS+19)*4)(r3),r20
+-	l.sw    ((JB_GPRS+20)*4)(r3),r21
+-	l.sw    ((JB_GPRS+21)*4)(r3),r22
+-	l.sw    ((JB_GPRS+22)*4)(r3),r23
+-	l.sw    ((JB_GPRS+23)*4)(r3),r24
+-	l.sw    ((JB_GPRS+24)*4)(r3),r25
+-	l.sw    ((JB_GPRS+25)*4)(r3),r26
+-	l.sw    ((JB_GPRS+26)*4)(r3),r27
+-	l.sw    ((JB_GPRS+27)*4)(r3),r28
+-	l.sw    ((JB_GPRS+28)*4)(r3),r29
+-	l.sw    ((JB_GPRS+29)*4)(r3),r30
+-	l.sw    ((JB_GPRS+30)*4)(r3),r31
+-	l.j	__sigjmp_save
+-	l.nop
++  l.sw    0(r3),r1
++  l.sw    4(r3),r2
++  l.sw    8(r3),r9
++  l.sw    12(r3),r10
++  l.sw    16(r3),r14
++  l.sw    20(r3),r16
++  l.sw    24(r3),r18
++  l.sw    28(r3),r20
++  l.sw    32(r3),r22
++  l.sw    36(r3),r24
++  l.sw    40(r3),r26
++  l.sw    44(r3),r28
++  l.sw    48(r3),r30
++  l.j __sigjmp_save
++  l.nop
+ END (__sigsetjmp)
+ hidden_def (__sigsetjmp)
+-
+diff --git a/ports/sysdeps/or1k/start.S b/ports/sysdeps/or1k/start.S
+index 3f52b86..f7864c9 100644
+--- a/ports/sysdeps/or1k/start.S
++++ glibc-2.19/ports/sysdeps/or1k/start.S
+@@ -114,8 +114,9 @@ _start:
+   l.ori r7,r7,lo(__libc_csu_fini)
+ #endif
+ 
+-  /* rtld_fini = NULL */
+-  l.movhi r8, 0
++  /* rtld_fini = the dynamic fini address.
++     This is set by dl-start.S or just plain NULL if called directly. */
++  l.ori r8, r9, 0
+ 
+   /* Adjust stack to account for a total of 7 args (i.e. the last one is
+      on the stack. */
+diff --git a/ports/sysdeps/unix/sysv/linux/or1k/bits/mman.h b/ports/sysdeps/unix/sysv/linux/or1k/bits/mman.h
+index 341fe98..cb5a2d5 100644
+--- a/ports/sysdeps/unix/sysv/linux/or1k/bits/mman.h
++++ glibc-2.19/ports/sysdeps/unix/sysv/linux/or1k/bits/mman.h
+@@ -1,8 +1,6 @@
+-/* Definitions for POSIX memory map interface.  Linux/AArch64 version.
+-
+-   Copyright (C) 1997-2012 Free Software Foundation, Inc.
+-
++/* Copyright (C) 2013-2014 Free Software Foundation, Inc.
+    This file is part of the GNU C Library.
++   Contributed by Christian Svensson <blue@cmd.nu>
+ 
+    The GNU C Library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+@@ -25,92 +23,22 @@
+ /* The following definitions basically come from the kernel headers.
+    But the kernel header is not namespace clean.  */
+ 
+-
+-/* Protections are chosen from these bits, OR'd together.  The
+-   implementation does not necessarily support PROT_EXEC or PROT_WRITE
+-   without PROT_READ.  The only guarantees are that no writing will be
+-   allowed without PROT_WRITE and no access will be allowed for PROT_NONE. */
+-
+-#define PROT_READ       0x1             /* Page can be read.  */
+-#define PROT_WRITE      0x2             /* Page can be written.  */
+-#define PROT_EXEC       0x4             /* Page can be executed.  */
+-#define PROT_SEM        0x8             /* Page may be used for atomic ops */
+-#define PROT_NONE       0x0             /* Page can not be accessed.  */
+-#define PROT_GROWSDOWN  0x01000000      /* Extend change to start of
+-                                           growsdown vma (mprotect only).  */
+-#define PROT_GROWSUP    0x02000000      /* Extend change to start of
+-                                           growsup vma (mprotect only).  */
+-
+-/* Sharing types (must choose one and only one of these).  */
+-#define MAP_SHARED      0x01            /* Share changes.  */
+-#define MAP_PRIVATE     0x02            /* Changes are private.  */
+-#ifdef __USE_MISC
+-# define MAP_TYPE       0x0f            /* Mask for type of mapping.  */
+-#endif
+-
+-/* Other flags.  */
+-#define MAP_FIXED       0x10            /* Interpret addr exactly.  */
+ #ifdef __USE_MISC
+-# define MAP_FILE       0
+-# define MAP_ANONYMOUS  0x20            /* Don't use a file.  */
+-# define MAP_ANON       MAP_ANONYMOUS
++# define MAP_GROWSDOWN  0x0100          /* stack-like segment */
++# define MAP_DENYWRITE  0x0800          /* ETXTBSY */
++# define MAP_EXECUTABLE 0x1000          /* mark it as an executable */
++# define MAP_LOCKED     0x2000          /* pages are locked */
++# define MAP_NORESERVE  0x4000          /* don't check for reservations */
++# define MAP_POPULATE   0x8000          /* populate (prefault) pagetables */
++# define MAP_NONBLOCK   0x10000         /* do not block on IO */
++# define MAP_STACK      0x20000         /* give out an address that is best suited for process/thread stacks */
++# define MAP_HUGETLB    0x40000         /* create a huge page mapping */
+ #endif
+ 
+-#ifdef __USE_MISC
+-/* These are Linux-specific.  */
+-# define MAP_GROWSDOWN  0x00100         /* Stack-like segment.  */
+-# define MAP_DENYWRITE  0x00800         /* ETXTBSY */
+-# define MAP_EXECUTABLE 0x01000         /* Mark it as an executable.  */
+-# define MAP_LOCKED     0x02000         /* Lock the mapping.  */
+-# define MAP_NORESERVE  0x04000         /* Don't check for reservations.  */
+-# define MAP_POPULATE   0x08000         /* Populate (prefault) pagetables.  */
+-# define MAP_NONBLOCK   0x10000         /* Do not block on IO.  */
+-# define MAP_STACK      0x20000         /* Allocation is for a stack.  */
+-# define MAP_HUGETLB    0x40000         /* Create huge page mapping.  */
+-#endif
+-
+-/* Flags to `msync'.  */
+-#define MS_ASYNC        1               /* Sync memory asynchronously.  */
+-#define MS_SYNC         4               /* Synchronous memory sync.  */
+-#define MS_INVALIDATE   2               /* Invalidate the caches.  */
+-
+-/* Flags for `mlockall'.  */
+-#define MCL_CURRENT     1               /* Lock all currently mapped pages.  */
+-#define MCL_FUTURE      2               /* Lock all additions to address
+-                                           space.  */
++/* Bits [26:31] are reserved, see mman-common.h for MAP_HUGETLB usage */
+ 
+-/* Flags for `mremap'.  */
+-#ifdef __USE_GNU
+-# define MREMAP_MAYMOVE 1
+-# define MREMAP_FIXED   2
+-#endif
+-
+-/* Advice to `madvise'.  */
+-#ifdef __USE_BSD
+-# define MADV_NORMAL       0     /* No further special treatment.  */
+-# define MADV_RANDOM       1     /* Expect random page references.  */
+-# define MADV_SEQUENTIAL   2     /* Expect sequential page references.  */
+-# define MADV_WILLNEED     3     /* Will need these pages.  */
+-# define MADV_DONTNEED     4     /* Don't need these pages.  */
+-# define MADV_REMOVE       9     /* Remove these pages and resources.  */
+-# define MADV_DONTFORK     10    /* Do not inherit across fork.  */
+-# define MADV_DOFORK       11    /* Do inherit across fork.  */
+-# define MADV_MERGEABLE    12    /* KSM may merge identical pages.  */
+-# define MADV_UNMERGEABLE  13    /* KSM may not merge identical pages.  */
+-# define MADV_HUGEPAGE     14    /* Worth backing with hugepages.  */
+-# define MADV_NOHUGEPAGE   15    /* Not worth backing with hugepages.  */
+-# define MADV_DONTDUMP     16    /* Explicity exclude from the core dump,
+-                                    overrides the coredump filter bits.  */
+-# define MADV_DODUMP       17    /* Clear the MADV_DONTDUMP flag.  */
+-# define MADV_HWPOISON     100   /* Poison a page for testing.  */
+-# define MADV_SOFT_OFFLINE 101   /* Soft offline page for testing */
+-#endif
++#define MCL_CURRENT     1               /* lock all current mappings */
++#define MCL_FUTURE      2               /* lock all future mappings */
+ 
+-/* The POSIX people had to invent similar names for the same things.  */
+-#ifdef __USE_XOPEN2K
+-# define POSIX_MADV_NORMAL      0 /* No further special treatment.  */
+-# define POSIX_MADV_RANDOM      1 /* Expect random page references.  */
+-# define POSIX_MADV_SEQUENTIAL  2 /* Expect sequential page references.  */
+-# define POSIX_MADV_WILLNEED    3 /* Will need these pages.  */
+-# define POSIX_MADV_DONTNEED    4 /* Don't need these pages.  */
+-#endif
++/* Include generic Linux declarations.  */
++#include <bits/mman-linux.h>
+diff --git a/ports/sysdeps/unix/sysv/linux/or1k/nptl/bits/atomic.h b/ports/sysdeps/unix/sysv/linux/or1k/nptl/bits/atomic.h
+deleted file mode 100644
+index 43440dc..0000000
+--- a/ports/sysdeps/unix/sysv/linux/or1k/nptl/bits/atomic.h
++++ /dev/null
+@@ -1,128 +0,0 @@
+-/* Copyright (C) 2010-2012 Free Software Foundation, Inc.
+-   This file is part of the GNU C Library.
+-   Contributed by Maxim Kuvyrkov <maxim@codesourcery.com>, 2010.
+-
+-   The GNU C Library is free software; you can redistribute it and/or
+-   modify it under the terms of the GNU Lesser General Public
+-   License as published by the Free Software Foundation; either
+-   version 2.1 of the License, or (at your option) any later version.
+-
+-   The GNU C Library is distributed in the hope that it will be useful,
+-   but WITHOUT ANY WARRANTY; without even the implied warranty of
+-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+-   Lesser General Public License for more details.
+-
+-   You should have received a copy of the GNU Lesser General Public
+-   License along with the GNU C Library.  If not, see
+-   <http://www.gnu.org/licenses/>.  */
+-
+-#ifndef _BITS_ATOMIC_H
+-#define _BITS_ATOMIC_H	1
+-
+-#include <stdint.h>
+-
+-/* This is needed to break a depencency loop, we do not need errno anyway */
+-#ifndef _ERRNO_H
+-# define _ERRNO_H
+-# include <sysdep.h>
+-# undef _ERRNO_H
+-#else
+-# include <sysdep.h>
+-#endif
+-
+-/* Or1k has no atomic compare-and-exchange operation, but the
+-   kernel provides userspace atomicity operations.  Use them.  */
+-
+-typedef int32_t atomic32_t;
+-typedef uint32_t uatomic32_t;
+-typedef int_fast32_t atomic_fast32_t;
+-typedef uint_fast32_t uatomic_fast32_t;
+-
+-typedef intptr_t atomicptr_t;
+-typedef uintptr_t uatomicptr_t;
+-typedef intmax_t atomic_max_t;
+-typedef uintmax_t uatomic_max_t;
+-
+-/* TODO: Move these to a kernel header */
+-#define OR1K_ATOMIC_SWAP	1
+-#define OR1K_ATOMIC_CMPXCHG	2
+-#define OR1K_ATOMIC_XCHG	3
+-#define OR1K_ATOMIC_ADD		4
+-#define OR1K_ATOMIC_DECPOS	5
+-#define OR1K_ATOMIC_AND		6
+-#define OR1K_ATOMIC_OR		7
+-#define OR1K_ATOMIC_UMAX	8
+-#define OR1K_ATOMIC_UMIN	9
+-
+-#define atomic_compare_and_exchange_val_acq(mem, newval, oldval) \
+-  ((__typeof (*(mem))) ((sizeof (*(mem)) == 4) ? \
+-	 INTERNAL_SYSCALL (or1k_atomic, , 4, \
+-	    OR1K_ATOMIC_CMPXCHG, mem, oldval, newval) \
+-	 : __atomic_error_bad_argument_size ()))
+-
+-#define atomic_exchange_acq(mem, newval) \
+-  ((__typeof (*(mem))) ((sizeof (*(mem)) == 4) ? \
+-	 INTERNAL_SYSCALL (or1k_atomic, , 3, \
+-	    OR1K_ATOMIC_XCHG, mem, newval) \
+-	 : __atomic_error_bad_argument_size ()))
+-
+-#define atomic_exchange_and_add_acq(mem, val) \
+-  ((__typeof (*(mem))) ((sizeof (*(mem)) == 4) ? \
+-	 INTERNAL_SYSCALL (or1k_atomic, , 3, \
+-	    OR1K_ATOMIC_ADD, mem, val) \
+-	 : __atomic_error_bad_argument_size ()))
+-
+-#define atomic_decrement_if_positive(mem) \
+-  ((__typeof (*(mem))) ((sizeof (*(mem)) == 4) ? \
+-	 INTERNAL_SYSCALL (or1k_atomic, , 2, \
+-	    OR1K_ATOMIC_DECPOS, mem) \
+-	 : __atomic_error_bad_argument_size ()))
+-
+-#define atomic_and_val(mem, mask) \
+-  ((__typeof (*(mem))) ((sizeof (*(mem)) == 4) ? \
+-	 INTERNAL_SYSCALL (or1k_atomic, , 3, \
+-	    OR1K_ATOMIC_AND, mem, mask) \
+-	 : __atomic_error_bad_argument_size ()))
+-
+-#define atomic_or_val(mem, mask) \
+-  ((__typeof (*(mem))) ((sizeof (*(mem)) == 4) ? \
+-	 INTERNAL_SYSCALL (or1k_atomic, , 3, \
+-	    OR1K_ATOMIC_OR, mem, mask) \
+-	 : __atomic_error_bad_argument_size ()))
+-
+-#define atomic_max_val(mem, val) \
+-  ((__typeof (*(mem))) ((sizeof (*(mem)) == 4) ? \
+-	 INTERNAL_SYSCALL (or1k_atomic, , 3, \
+-	    OR1K_ATOMIC_UMAX, mem, val) \
+-	 : __atomic_error_bad_argument_size ()))
+-
+-#define atomic_min_val(mem, val) \
+-  ((__typeof (*(mem))) ((sizeof (*(mem)) == 4) ? \
+-	 INTERNAL_SYSCALL (or1k_atomic, , 3, \
+-	    OR1K_ATOMIC_UMIN, mem, val) \
+-	 : __atomic_error_bad_argument_size ()))
+-
+-
+-/* atomic_bit_test_set in terms of atomic_or_val. */
+-#define atomic_bit_test_set(mem, bit)                                    \
+-    ({ __typeof (*(mem)) __att0_mask = ((__typeof (*(mem))) 1 << (bit)); \
+-         atomic_or_val ((mem), __att0_mask) & __att0_mask; })
+-
+-/* Various macros that should just be synonyms. */
+-#define catomic_exchange_and_add atomic_exchange_and_add
+-#define atomic_and(mem, mask) ((void) atomic_and_val ((mem), (mask)))
+-#define catomic_and atomic_and
+-#define atomic_or(mem, mask) ((void) atomic_or_val ((mem), (mask)))
+-#define catomic_or atomic_or
+-#define atomic_max(mem, val) ((void)atomic_max_val ((mem), (val)))
+-#define catomic_max atomic_max
+-#define atomic_min(mem, val) ((void)atomic_min_val ((mem), (val)))
+-#define catomic_min atomic_min
+-/*
+- * This non-existent symbol is called for unsupporrted sizes,
+- * indicating a bug in the caller.
+- */
+-extern int __atomic_error_bad_argument_size(void)
+-    __attribute__ ((error ("bad sizeof atomic argument")));
+-
+-#endif

@@ -1,0 +1,591 @@
+diff --git a/sysdeps/or1k/bits/atomic.h b/sysdeps/or1k/bits/atomic.h
+index cad6177..1e95260 100644
+--- a/sysdeps/or1k/bits/atomic.h
++++ glibc-2.19/ports/sysdeps/or1k/bits/atomic.h
+@@ -17,155 +17,35 @@
+    <http://www.gnu.org/licenses/>.  */
+ 
+ #ifndef _OR1K_BITS_ATOMIC_H
+-#define _OR1K_BITS_ATOMIC_H	1
++#define _OR1K_BITS_ATOMIC_H     1
+ 
+ #include <stdint.h>
+ 
+ typedef int8_t  atomic8_t;
+ typedef int16_t atomic16_t;
+ typedef int32_t atomic32_t;
+-typedef int64_t atomic64_t;
+ 
+ typedef uint8_t  uatomic8_t;
+ typedef uint16_t uatomic16_t;
+ typedef uint32_t uatomic32_t;
+-typedef uint64_t uatomic64_t;
+ 
+ typedef intptr_t atomicptr_t;
+ typedef uintptr_t uatomicptr_t;
+ typedef intmax_t atomic_max_t;
+ typedef uintmax_t uatomic_max_t;
+ 
+-
+-/* Compare and exchange.
+-   For all "bool" routines, we return FALSE if exchange succesful.  */
+-
+-# define __arch_compare_and_exchange_bool_8_int(mem, newval, oldval, model) \
+-  ({									\
+-    typeof (*mem) __oldval = (oldval);					\
+-    !__atomic_compare_exchange_n (mem, (void *) &__oldval, newval, 0,	\
+-				  model, __ATOMIC_RELAXED);		\
+-  })
+-
+-# define __arch_compare_and_exchange_bool_16_int(mem, newval, oldval, model) \
+-  ({									\
+-    typeof (*mem) __oldval = (oldval);					\
+-    !__atomic_compare_exchange_n (mem, (void *) &__oldval, newval, 0,	\
+-				  model, __ATOMIC_RELAXED);		\
+-  })
+-
+-# define __arch_compare_and_exchange_bool_32_int(mem, newval, oldval, model) \
+-  ({									\
+-    typeof (*mem) __oldval = (oldval);					\
+-    !__atomic_compare_exchange_n (mem, (void *) &__oldval, newval, 0,	\
+-				  model, __ATOMIC_RELAXED);		\
+-  })
+-
+-#  define __arch_compare_and_exchange_bool_64_int(mem, newval, oldval, model) \
+-  ({									\
+-    typeof (*mem) __oldval = (oldval);					\
+-    !__atomic_compare_exchange_n (mem, (void *) &__oldval, newval, 0,	\
+-				  model, __ATOMIC_RELAXED);		\
+-  })
+-
+-# define __arch_compare_and_exchange_val_8_int(mem, newval, oldval, model) \
+-  ({									\
+-    typeof (*mem) __oldval = (oldval);					\
+-    __atomic_compare_exchange_n (mem, (void *) &__oldval, newval, 0,	\
+-				 model, __ATOMIC_RELAXED);		\
+-    __oldval;								\
++#define atomic_compare_and_exchange_val_acq(mem, newval, oldval) \
++  ({                                                                    \
++    typeof (*mem) __oldval = (oldval);                                  \
++    __atomic_compare_exchange_n (mem, (void *) &__oldval, newval, 0,    \
++                                 __ATOMIC_ACQUIRE, __ATOMIC_RELAXED);   \
++    __oldval;                                                           \
+   })
+ 
+-# define __arch_compare_and_exchange_val_16_int(mem, newval, oldval, model) \
+-  ({									\
+-    typeof (*mem) __oldval = (oldval);					\
+-    __atomic_compare_exchange_n (mem, (void *) &__oldval, newval, 0,	\
+-				 model, __ATOMIC_RELAXED);		\
+-    __oldval;								\
+-  })
+-
+-# define __arch_compare_and_exchange_val_32_int(mem, newval, oldval, model) \
+-  ({									\
+-    typeof (*mem) __oldval = (oldval);					\
+-    __atomic_compare_exchange_n (mem, (void *) &__oldval, newval, 0,	\
+-				 model, __ATOMIC_RELAXED);		\
+-    __oldval;								\
+-  })
+-
+-#  define __arch_compare_and_exchange_val_64_int(mem, newval, oldval, model) \
+-  ({									\
+-    typeof (*mem) __oldval = (oldval);					\
+-    __atomic_compare_exchange_n (mem, (void *) &__oldval, newval, 0,	\
+-				 model, __ATOMIC_RELAXED);		\
+-    __oldval;								\
+-  })
+-
+-
+-/* Compare and exchange with "acquire" semantics, ie barrier after.  */
+-
+-# define atomic_compare_and_exchange_bool_acq(mem, new, old)	\
+-  __atomic_bool_bysize (__arch_compare_and_exchange_bool, int,	\
+-			mem, new, old, __ATOMIC_ACQUIRE)
+-
+-# define atomic_compare_and_exchange_val_acq(mem, new, old)	\
+-  __atomic_val_bysize (__arch_compare_and_exchange_val, int,	\
+-		       mem, new, old, __ATOMIC_ACQUIRE)
+-
+-/* Compare and exchange with "release" semantics, ie barrier before.  */
+-
+-# define atomic_compare_and_exchange_bool_rel(mem, new, old)	\
+-  __atomic_bool_bysize (__arch_compare_and_exchange_bool, int,	\
+-			mem, new, old, __ATOMIC_RELEASE)
+-
+-# define atomic_compare_and_exchange_val_rel(mem, new, old)	 \
+-  __atomic_val_bysize (__arch_compare_and_exchange_val, int,    \
+-                       mem, new, old, __ATOMIC_RELEASE)
+-
+-
+-/* Atomic exchange (without compare).  */
+-
+-# define __arch_exchange_8_int(mem, newval, model)	\
+-  __atomic_exchange_n (mem, newval, model)
+-
+-# define __arch_exchange_16_int(mem, newval, model)	\
+-  __atomic_exchange_n (mem, newval, model)
+-
+-# define __arch_exchange_32_int(mem, newval, model)	\
+-  __atomic_exchange_n (mem, newval, model)
+-
+-#  define __arch_exchange_64_int(mem, newval, model)	\
+-  __atomic_exchange_n (mem, newval, model)
+-
+-# define atomic_exchange_acq(mem, value)				\
+-  __atomic_val_bysize (__arch_exchange, int, mem, value, __ATOMIC_ACQUIRE)
+-
+-# define atomic_exchange_rel(mem, value)				\
+-  __atomic_val_bysize (__arch_exchange, int, mem, value, __ATOMIC_RELEASE)
+-
+-
+-/* Atomically add value and return the previous (unincremented) value.  */
+-
+-# define __arch_exchange_and_add_8_int(mem, value, model)	\
+-  __atomic_fetch_add (mem, value, model)
+-
+-# define __arch_exchange_and_add_16_int(mem, value, model)	\
+-  __atomic_fetch_add (mem, value, model)
+-
+-# define __arch_exchange_and_add_32_int(mem, value, model)	\
+-  __atomic_fetch_add (mem, value, model)
+-
+-#  define __arch_exchange_and_add_64_int(mem, value, model)	\
+-  __atomic_fetch_add (mem, value, model)
+-
+-# define atomic_exchange_and_add_acq(mem, value)			\
+-  __atomic_val_bysize (__arch_exchange_and_add, int, mem, value,	\
+-		       __ATOMIC_ACQUIRE)
+-
+-# define atomic_exchange_and_add_rel(mem, value)			\
+-  __atomic_val_bysize (__arch_exchange_and_add, int, mem, value,	\
+-		       __ATOMIC_RELEASE)
++#define atomic_exchange_acq(mem, value) \
++  __atomic_exchange_n(mem, value, __ATOMIC_ACQUIRE)
+ 
+-/* Barrier macro. */
+-#define atomic_full_barrier() __sync_synchronize()
++#define atomic_exchange_and_add_acq(mem, value) \
++  __atomic_fetch_add(mem, value, __ATOMIC_ACQUIRE)
+ 
+ #endif
+diff --git a/sysdeps/or1k/dl-machine.h b/sysdeps/or1k/dl-machine.h
+index abfb424..bef0f16 100644
+--- a/sysdeps/or1k/dl-machine.h
++++ glibc-2.19/ports/sysdeps/or1k/dl-machine.h
+@@ -243,7 +243,6 @@ elf_machine_rela (struct link_map *map, const Elf32_Rela *reloc,
+ 	      ((struct unaligned *) reloc_addr)->x = value + reloc->r_addend;
+ 	      break;
+ 	    }
+-	  case R_OR1K_INSN_REL_26:
+ 	  case R_OR1K_GLOB_DAT:
+ 	  case R_OR1K_JMP_SLOT:
+ 	    *reloc_addr = value + reloc->r_addend;
+diff --git a/sysdeps/or1k/dl-start.S b/sysdeps/or1k/dl-start.S
+index ea3937d..97bef3f 100644
+--- a/sysdeps/or1k/dl-start.S
++++ glibc-2.19/ports/sysdeps/or1k/dl-start.S
+@@ -94,9 +94,7 @@ _dl_start_user:
+   /* Load termination function address
+      Pass this in r9 to the _start function.
+      start.S will then pass this to __libc_start_main. */
+-  l.movhi r9, gotoffhi(_dl_fini)
+-  l.ori r9, r9, gotofflo(_dl_fini)
+-  l.add r9, r9, r16
++  l.lwz r9, got(_dl_fini)(r16)
+ 
+   l.jr  r22
+   l.nop
+diff --git a/sysdeps/or1k/nptl/pthreaddef.h b/sysdeps/or1k/nptl/pthreaddef.h
+index e8da3d9..5a131ab 100644
+--- a/sysdeps/or1k/nptl/pthreaddef.h
++++ glibc-2.19/ports/sysdeps/or1k/nptl/pthreaddef.h
+@@ -30,9 +30,3 @@
+ 
+ /* Location of current stack frame.  */
+ #define CURRENT_STACK_FRAME __builtin_frame_address (0)
+-
+-
+-/* XXX Until we have a better place keep the definitions here.  */
+-#define __exit_thread_inline(val) \
+-  INLINE_SYSCALL (exit, 1, (val))
+-
+diff --git a/sysdeps/or1k/start.S b/sysdeps/or1k/start.S
+index f7864c9..09d248f 100644
+--- a/sysdeps/or1k/start.S
++++ glibc-2.19/ports/sysdeps/or1k/start.S
+@@ -68,7 +68,11 @@
+ .global _start
+ _start:
+ 
+-#ifdef __PIC__
++  /* rtld_fini = the dynamic fini address.
++     This is set by dl-start.S or just plain NULL if called directly. */
++  l.ori r8, r9, 0
++
++#ifdef SHARED
+   /* Obtain a pointer to .got in r16 */
+   l.jal .LPC0
+ #ifndef __OR1K_NODELAY__
+@@ -95,7 +99,7 @@ _start:
+   l.lwz  r4,0(r1)
+   l.addi r5,r1,4
+ 
+-#ifdef __PIC__
++#ifdef SHARED
+   l.lwz r3,got(main)(r16)
+ #else
+   l.movhi r3,hi(main)
+@@ -104,7 +108,7 @@ _start:
+ 
+   /* Put the constructor and destructor initialization as args four and
+      five into r6 and r7 */
+-#ifdef __PIC__
++#ifdef SHARED
+   l.lwz r6, got(__libc_csu_init)(r16)
+   l.lwz r7, got(__libc_csu_fini)(r16)
+ #else
+@@ -114,10 +118,6 @@ _start:
+   l.ori r7,r7,lo(__libc_csu_fini)
+ #endif
+ 
+-  /* rtld_fini = the dynamic fini address.
+-     This is set by dl-start.S or just plain NULL if called directly. */
+-  l.ori r8, r9, 0
+-
+   /* Adjust stack to account for a total of 7 args (i.e. the last one is
+      on the stack. */
+   l.addi  r1,r1,-4
+@@ -129,7 +129,7 @@ _start:
+   l.add r9,r0,r0
+ 
+   /* Let the libc call main and exit with its return code.  */
+-#ifdef __PIC__
++#ifdef SHARED
+   l.j plt(__libc_start_main)
+ #else
+   l.j __libc_start_main
+diff --git a/sysdeps/unix/sysv/linux/or1k/lowlevellock.h b/sysdeps/unix/sysv/linux/or1k/lowlevellock.h
+index 0e0d48e..e3e52a4 100644
+--- a/sysdeps/unix/sysv/linux/or1k/lowlevellock.h
++++ glibc-2.19/ports/sysdeps/unix/sysv/linux/or1k/nptl/lowlevellock.h
+@@ -1,4 +1,4 @@
+-/* Copyright (C) 2011 Free Software Foundation, Inc.
++/* Copyright (C) 2011-2014 Free Software Foundation, Inc.
+    This file is part of the GNU C Library.
+    Contributed by Chris Metcalf <cmetcalf@tilera.com>, 2011.
+ 
+@@ -38,6 +38,8 @@
+ #define FUTEX_TRYLOCK_PI	8
+ #define FUTEX_WAIT_BITSET	9
+ #define FUTEX_WAKE_BITSET	10
++#define FUTEX_WAIT_REQUEUE_PI	11
++#define FUTEX_CMP_REQUEUE_PI	12
+ #define FUTEX_PRIVATE_FLAG	128
+ #define FUTEX_CLOCK_REALTIME	256
+ 
+@@ -86,6 +88,19 @@
+ 			      (val), (timespec));			      \
+   })
+ 
++#define lll_futex_timed_wait_bitset(futexp, val, timespec, clockbit, private) \
++  ({									      \
++    INTERNAL_SYSCALL_DECL (__err);					      \
++    long int __ret;							      \
++    int __op = FUTEX_WAIT_BITSET | clockbit;				      \
++									      \
++    __ret = INTERNAL_SYSCALL (futex, __err, 6, (futexp),		      \
++			      __lll_private_flag (__op, private),	      \
++			      (val), (timespec), NULL /* Unused.  */, 	      \
++			      FUTEX_BITSET_MATCH_ANY);			      \
++    __ret;		      						      \
++  })
++
+ #define lll_futex_wake(futexp, nr, private) \
+   ({									      \
+     INTERNAL_SYSCALL_DECL (__err);					      \
+@@ -94,15 +109,6 @@
+ 			      (nr), 0);					      \
+   })
+ 
+-#define lll_robust_dead(futexv, private) \
+-  do									      \
+-    {									      \
+-      int *__futexp = &(futexv);					      \
+-      atomic_or (__futexp, FUTEX_OWNER_DIED);				      \
+-      lll_futex_wake (__futexp, 1, private);				      \
+-    }									      \
+-  while (0)
+-
+ /* Returns non-zero if error happened, zero if success.  */
+ #define lll_futex_requeue(futexp, nr_wake, nr_move, mutex, val, private) \
+   ({									      \
+@@ -126,7 +132,33 @@
+     INTERNAL_SYSCALL_ERROR_P (__ret, __err);				      \
+   })
+ 
++/* Priority Inheritance support.  */
++#define lll_futex_wait_requeue_pi(futexp, val, mutex, private) \
++  lll_futex_timed_wait_requeue_pi (futexp, val, NULL, 0, mutex, private)
++
++#define lll_futex_timed_wait_requeue_pi(futexp, val, timespec, clockbit,      \
++					mutex, private)			      \
++  ({									      \
++    INTERNAL_SYSCALL_DECL (__err);					      \
++    long int __ret;							      \
++    int __op = FUTEX_WAIT_REQUEUE_PI | clockbit;			      \
++									      \
++    __ret = INTERNAL_SYSCALL (futex, __err, 5, (futexp),		      \
++			      __lll_private_flag (__op, private),	      \
++			      (val), (timespec), mutex); 		      \
++    INTERNAL_SYSCALL_ERROR_P (__ret, __err);				      \
++  })
+ 
++#define lll_futex_cmp_requeue_pi(futexp, nr_wake, nr_move, mutex, val, priv)  \
++  ({									      \
++    INTERNAL_SYSCALL_DECL (__err);					      \
++    long int __ret;							      \
++									      \
++    __ret = INTERNAL_SYSCALL (futex, __err, 6, (futexp),		      \
++			      __lll_private_flag (FUTEX_CMP_REQUEUE_PI, priv),\
++			      (nr_wake), (nr_move), (mutex), (val));	      \
++    INTERNAL_SYSCALL_ERROR_P (__ret, __err);				      \
++  })
+ 
+ 
+ static inline int __attribute__ ((always_inline))
+@@ -145,14 +177,6 @@ __lll_cond_trylock (int *futex)
+ #define lll_cond_trylock(lock)	__lll_cond_trylock (&(lock))
+ 
+ 
+-static inline int __attribute__ ((always_inline))
+-__lll_robust_trylock (int *futex, int id)
+-{
+-  return atomic_compare_and_exchange_val_acq (futex, id, 0) != 0;
+-}
+-#define lll_robust_trylock(lock, id) \
+-  __lll_robust_trylock (&(lock), id)
+-
+ extern void __lll_lock_wait_private (int *futex) attribute_hidden;
+ extern void __lll_lock_wait (int *futex, int private) attribute_hidden;
+ extern int __lll_robust_lock_wait (int *futex, int private) attribute_hidden;
+diff --git a/sysdeps/unix/sysv/linux/or1k/or1k_clone.S b/sysdeps/unix/sysv/linux/or1k/or1k_clone.S
+index 18d87c9..e7c9e8e 100644
+--- a/sysdeps/unix/sysv/linux/or1k/or1k_clone.S
++++ glibc-2.19/ports/sysdeps/unix/sysv/linux/or1k/nptl/or1k_clone.S
+@@ -22,11 +22,11 @@ ENTRY(__or1k_clone)
+ 	*/
+ 
+ 	/* Put 'fn', 'arg' and 'flags' on child stack */
+-	l.sw  -4(r4), r3
+-	l.sw  -8(r4), r6
+-	l.sw  -12(r4), r5
++	l.addi r4, r4, -12
++	l.sw  8(r4), r3
++	l.sw  4(r4), r6
++	l.sw  0(r4), r5
+ 
+-	/* Set all arguments */
+ 	l.ori r3, r5, 0
+ 	/* child_stack is already in r4 */
+ 	l.ori r5, r7, 0
+@@ -36,57 +36,58 @@ ENTRY(__or1k_clone)
+ 	DO_CALL (clone)
+ 
+ 	l.sfgeui r11, 0xf001
+-	l.bf .Lerror
+-	l.nop
++	l.bf L(error)
++	 l.nop
+ 
+ 	/* If we are not the child, return the pid */
+ 	l.sfeqi r11, 0
+-	l.bf .Lchild
+-	l.nop
++	l.bf L(child)
++	 l.nop
+ 
+ 	l.jr r9
+-	l.nop
++	 l.nop
+ 
+-.Lchild:
++L(child):
+ 	/* Load flags */
+-	l.lwz r3, -12(r1)
++	l.lwz r3, 0(r1)
+ 
+-	/* Update PID, but only if we do not share the same PID 
++	/* Update PID, but only if we do not share the same PID
+ 	   as our parent */
+ 	l.srli  r4, r3, 16
+ 	l.andi r4, r4, hi(CLONE_THREAD)
+ 	l.sfnei r4, 0
+-	l.bf .Loldpid
++	l.bf L(oldpid)
++	 l.nop
+ 
+ 	/* If we share the same memory space, reset the PID/TID values.
+ 	   Apparently getpid caches, so we want to make sure it's flushed */
+ 	l.ori r11, r0, -1
+ 	l.andi r4, r3, CLONE_VM
+ 	l.sfnei r4, 0
+-	l.bf .Lsetpid
+-	l.nop
++	l.bf L(setpid)
++	 l.nop
+ 
+ 	/* Else we update them */
+ 	DO_CALL (getpid)
+ 
+-.Lsetpid:
++L(setpid):
+ 	l.addi r3, r10, TP_TO_PTHREAD_OFFSET
+ 	l.sw PID_OFFSET(r3), r11
+ 	l.sw TID_OFFSET(r3), r11
+ 	
+ 
+-.Loldpid:
++L(oldpid):
+ 	/* Load function from stack */
+-	l.lwz r9, -4(r1)
+-	l.jr r9
+-	l.lwz r3, -8(r1)
++	l.lwz r11, 8(r1)
++	l.jalr r11
++	 l.lwz r3, 4(r1)
+ 
+ 	/* Exit the child thread */
+ 	l.jal HIDDEN_JUMPTARGET(_exit)
+-	l.ori r3, r11, 0
++	 l.ori r3, r11, 0
+ 
+-.Lerror:
++L(error):
+ 	l.j SYSCALL_ERROR_NAME
+-	l.ori r3,r11,0
++	 l.ori r3,r11,0
+ 
+ PSEUDO_END (__or1k_clone)
+diff --git a/sysdeps/unix/sysv/linux/or1k/sysdep-cancel.h b/sysdeps/unix/sysv/linux/or1k/sysdep-cancel.h
+new file mode 100644
+index 0000000..41e3800
+--- /dev/null
++++ glibc-2.19/ports/sysdeps/unix/sysv/linux/or1k/nptl/sysdep-cancel.h
+@@ -0,0 +1,116 @@
++/* Copyright (C) 2014 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library.  If not, see
++   <http://www.gnu.org/licenses/>.  */
++
++#include <sysdep.h>
++#include <tls.h>
++#ifndef __ASSEMBLER__
++# include <nptl/pthreadP.h>
++#endif
++
++#if !defined NOT_IN_libc || defined IS_IN_libpthread || defined IS_IN_librt
++
++# undef PSEUDO
++# define PSEUDO(name, syscall_name, args)                                     \
++ENTRY(__##syscall_name##_nocancel);                                           \
++L(pseudo_nocancel):                                                           \
++  DO_CALL(syscall_name);                                                      \
++  l.j     L(pseudo_finish);                                                   \
++   l.nop;                                                                     \
++END(__##syscall_name##_nocancel);                                             \
++ENTRY(name);                                                                  \
++  SINGLE_THREAD_P(r13);                                                       \
++  l.sfeq  r13,r0;                                                             \
++  l.bnf   L(pseudo_nocancel);                                                 \
++   l.nop;                                                                     \
++  /* Reserve the same amount of stack space, effectivly disregarding          \
++   * how many args we're supposed to push. This makes the code easier. */     \
++  l.addi  r1,r1,-28;                                                          \
++  cfi_adjust_cfa_offset(28);                                                  \
++  PUSHARGS_##args; /* CENABLE is a function call, save args for syscall. */   \
++  CENABLE;                                                                    \
++  l.sw    24(r1),r11;                                                         \
++  POPARGS_##args;                                                             \
++  DO_CALL(syscall_name);                                                      \
++  l.lwz   r3,24(r1); /* pass return value from CENABLE to CDISABLE. */        \
++  l.sw    24(r1),r11; /* save syscall return value for after CDISABLE. */     \
++  CDISABLE;                                                                   \
++  l.lwz   r11,24(r1); /* restore syscall return value. */                     \
++  cfi_adjust_cfa_offset(-28);                                                 \
++  l.addi  r1,r1,28;                                                           \
++L(pseudo_finish):                                                             \
++  /* if -4096 < ret < 0 holds, it's an error */                               \
++  l.sfgeui r11,0xf001;                                                        \
++  l.bf    L(pseudo_end);                                                      \
++   l.nop
++
++# undef PSEUDO_END
++# define PSEUDO_END(name) \
++L(pseudo_end): \
++  l.j SYSCALL_ERROR_NAME; \
++  l.ori r3,r11,0; \
++  END(name)
++
++# define PUSHARGS_0     /* nothing to do */
++# define PUSHARGS_1     PUSHARGS_0 l.sw   0(r1),r3;
++# define PUSHARGS_2     PUSHARGS_1 l.sw   4(r1),r4;
++# define PUSHARGS_3     PUSHARGS_2 l.sw   8(r1),r5;
++# define PUSHARGS_4     PUSHARGS_3 l.sw   12(r1),r6;
++# define PUSHARGS_5     PUSHARGS_4 l.sw   16(r1),r7;
++# define PUSHARGS_6     PUSHARGS_5 l.sw   20(r1),r8;
++
++# define POPARGS_0      /* nothing to do */
++# define POPARGS_1      POPARGS_0 l.lwz   r3,0(r1);
++# define POPARGS_2      POPARGS_1 l.lwz   r4,4(r1);
++# define POPARGS_3      POPARGS_2 l.lwz   r5,8(r1);
++# define POPARGS_4      POPARGS_3 l.lwz   r6,12(r1);
++# define POPARGS_5      POPARGS_4 l.lwz   r7,16(r1);
++# define POPARGS_6      POPARGS_5 l.lwz   r8,20(r1);
++
++# define PSEUDO_JMP(sym) l.jal sym; l.nop;
++
++# ifdef IS_IN_libpthread
++#  define CENABLE       PSEUDO_JMP (__pthread_enable_asynccancel)
++#  define CDISABLE      PSEUDO_JMP (__pthread_disable_asynccancel)
++# elif defined IS_IN_librt
++#  define CENABLE       PSEUDO_JMP (__librt_enable_asynccancel)
++#  define CDISABLE      PSEUDO_JMP (__librt_disable_asynccancel)
++# else
++#  define CENABLE       PSEUDO_JMP (__libc_enable_asynccancel)
++#  define CDISABLE      PSEUDO_JMP (__libc_disable_asynccancel)
++# endif
++
++# ifndef __ASSEMBLER__
++#  define SINGLE_THREAD_P \
++  __builtin_expect (THREAD_GETMEM (THREAD_SELF, \
++                                   header.multiple_threads) == 0, 1)
++# else
++/* It's not super nice to have "r10" hardcoded here */
++#  define SINGLE_THREAD_P(reg) l.lwz reg, MULTIPLE_THREADS_OFFSET(r10)
++#endif
++
++#elif !defined __ASSEMBLER__
++
++# define SINGLE_THREAD_P 1
++# define NO_CANCELLATION 1
++
++#endif
++
++#ifndef __ASSEMBLER__
++# define RTLD_SINGLE_THREAD_P \
++  __builtin_expect (THREAD_GETMEM (THREAD_SELF, \
++                                   header.multiple_threads) == 0, 1)
++#endif
