@@ -43,12 +43,13 @@
 #define ret          l.jr r9; l.nop
 #define ret_NOERRNO  l.jr r9; l.nop
 
-#undef DO_CALL
+#undef	DO_CALL
 #define DO_CALL(syscall_name) \
     l.addi r11, r0, SYS_ify (syscall_name); \
     l.sys 1; \
     l.nop
 
+#undef	PSEUDO
 #define PSEUDO(name, syscall_name, args) \
   ENTRY (name); \
   DO_CALL(syscall_name); \
@@ -57,16 +58,19 @@
   l.bf L(pseudo_end); \
    l.nop
 
+#undef	PSEUDO_NOERRNO
 #define PSEUDO_NOERRNO(name, syscall_name, args)  \
   ENTRY (name);           \
   DO_CALL(syscall_name)
 
+#undef	PSEUDO_END
 #define PSEUDO_END(name) \
 L(pseudo_end): \
   l.j SYSCALL_ERROR_NAME; \
   l.ori r3,r11,0; \
   END (name)
 
+#undef	PSEUDO_END_NOERRNO
 #define PSEUDO_END_NOERRNO(name) \
   END (name)
 

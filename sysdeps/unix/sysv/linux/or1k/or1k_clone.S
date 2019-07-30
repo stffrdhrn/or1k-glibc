@@ -72,7 +72,6 @@ L(child):
 
 L(setpid):
 	l.addi r3, r10, TP_TO_PTHREAD_OFFSET
-	l.sw PID_OFFSET(r3), r11
 	l.sw TID_OFFSET(r3), r11
 	
 

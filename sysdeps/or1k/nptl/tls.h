@@ -25,17 +25,7 @@
 # include <stdbool.h>
 # include <stddef.h>
 # include <stdint.h>
-
-/* Type for the dtv.  */
-typedef union dtv
-{
-  size_t counter;
-  struct
-  {
-    void *val;
-    bool is_static;
-  } pointer;
-} dtv_t;
+# include <dl-dtv.h>
 
 typedef struct
 {
@@ -96,7 +86,7 @@ register tcbhead_t *__thread_self __asm__("r10");
  *
  * This memory is really allocated PRE the TLS block, so it's possible
  * to do ((char*)tlsblock) - TLS_PRE_TCB_SIZE to access it.
- * This is done for THREAD_SELF. */
+ * This is done for THREAD_SELF.  */
 # define TLS_PRE_TCB_SIZE sizeof (struct pthread)
 
 
@@ -113,7 +103,7 @@ register tcbhead_t *__thread_self __asm__("r10");
  * However it does not, this time it points to the generation counter,
  * so just store it.
  *
- * Note: -1 is still valid and contains the length. */
+ * Note: -1 is still valid and contains the length.  */
 # define INSTALL_NEW_DTV(dtv) \
   (THREAD_DTV() = (dtv))
 
@@ -171,6 +161,7 @@ register tcbhead_t *__thread_self __asm__("r10");
   descr->member[idx] = (value)
 
 /* Get and set the global scope generation counter in struct pthread.  */
+#define THREAD_GSCOPE_IN_TCB      1
 #define THREAD_GSCOPE_FLAG_UNUSED 0
 #define THREAD_GSCOPE_FLAG_USED   1
 #define THREAD_GSCOPE_FLAG_WAIT   2

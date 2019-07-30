@@ -1,4 +1,4 @@
-/* Copyright (C) 2014 Free Software Foundation, Inc.
+/* Copyright (C) 2019 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -93,24 +93,4 @@ L(pseudo_end): \
 #  define CDISABLE      PSEUDO_JMP (__libc_disable_asynccancel)
 # endif
 
-# ifndef __ASSEMBLER__
-#  define SINGLE_THREAD_P \
-  __builtin_expect (THREAD_GETMEM (THREAD_SELF, \
-                                   header.multiple_threads) == 0, 1)
-# else
-/* It's not super nice to have "r10" hardcoded here */
-#  define SINGLE_THREAD_P(reg) l.lwz reg, MULTIPLE_THREADS_OFFSET(r10)
-#endif
-
-#elif !defined __ASSEMBLER__
-
-# define SINGLE_THREAD_P 1
-# define NO_CANCELLATION 1
-
-#endif
-
-#ifndef __ASSEMBLER__
-# define RTLD_SINGLE_THREAD_P \
-  __builtin_expect (THREAD_GETMEM (THREAD_SELF, \
-                                   header.multiple_threads) == 0, 1)
-#endif
+#endif /* libc | pthread | librt */
