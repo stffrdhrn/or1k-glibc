@@ -1,6 +1,7 @@
-/* Copyright (C) 2005 Free Software Foundation, Inc.
+/* OpenRISC pthread offsets
+   Copyright (C) 2019 Free Software Foundation, Inc.
+
    This file is part of the GNU C Library.
-   Contributed by Phil Blundell <pb@nexus.co.uk>, 2005
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -16,13 +17,10 @@
    License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <sched.h>
-#include <signal.h>
-#include <sysdep.h>
-#include <tls.h>
+// TODO: stub
 
-
-#define ARCH_FORK()							\
-  INLINE_SYSCALL (clone, 5,						\
-		  CLONE_CHILD_SETTID | CLONE_CHILD_CLEARTID | SIGCHLD,	\
-		  NULL, NULL, &THREAD_SELF->tid, NULL)
+#define __PTHREAD_MUTEX_NUSERS_OFFSET   12
+#define __PTHREAD_MUTEX_KIND_OFFSET     16
+#define __PTHREAD_MUTEX_SPINS_OFFSET    20
+#define __PTHREAD_MUTEX_ELISION_OFFSET  22
+#define __PTHREAD_MUTEX_LIST_OFFSET     24

@@ -106,6 +106,9 @@ elf_machine_load_address (void)
 /* A reloc type used for ld.so cmdline arg lookups to reject PLT entries.  */
 #define ELF_MACHINE_JMP_SLOT    R_OR1K_JMP_SLOT
 
+#define ELF_MACHINE_NO_REL 1
+#define ELF_MACHINE_NO_RELA 0
+
 #define ARCH_LA_PLTENTER or1k_gnu_pltenter
 #define ARCH_LA_PLTEXIT or1k_gnu_pltexit
 
@@ -158,10 +161,11 @@ dl_platform_init (void)
     GLRO(dl_platform) = NULL;
 }
 
-static inline Elf32_Addr
+static inline ElfW(Addr)
 elf_machine_fixup_plt (struct link_map *map, lookup_t t,
-                       const Elf32_Rela *reloc,
-                       Elf32_Addr *reloc_addr, Elf32_Addr value)
+		       const ElfW(Sym) *refsym, const ElfW(Sym) *sym,
+		       const ElfW(Rela) *reloc,
+		       ElfW(Addr) *reloc_addr, ElfW(Addr) value)
 {
   return *reloc_addr = value;
 }

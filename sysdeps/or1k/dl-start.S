@@ -65,7 +65,7 @@ _dl_start_user:
   l.lwz r4, 0(r18)
 
   /* Load argv */
-  l.lwz r20, got(INTUSE(_dl_argv))(r16)
+  l.lwz r20, got(_dl_argv)(r16)
   l.lwz r5, 0(r20)
 
   /* Load envp = &argv[argc + 1] */
@@ -73,7 +73,7 @@ _dl_start_user:
   l.addi r6, r6, 4
   l.add r6, r6, r5
 
-  l.jal plt(_dl_init_internal)
+  l.jal plt(_dl_init)
   l.nop
 
   /* Now set up for user entry.
