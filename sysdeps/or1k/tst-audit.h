@@ -1,4 +1,7 @@
-/* Copyright (C) 1998, 2002, 2003, 2004 Free Software Foundation, Inc.
+/* Definitions for testing PLT entry/exit auditing.  OpenRISC version.
+
+   Copyright (C) 2019 Free Software Foundation, Inc.
+
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -12,29 +15,11 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, see
+   License along with the GNU C Library.  If not, see
    <http://www.gnu.org/licenses/>.  */
 
-#include <stdarg.h>
-#include <sys/ioctl.h>
-#include <sysdep.h>
-
-/* The or1k ABI uses stack for varargs, syscall uses registers.
-   This function moves arguments from varargs to registers.  */
-int
-__ioctl (int fd, unsigned long int request, ...)
-{
-  void *arg;
-  va_list ap;
-  int result;
-
-  va_start (ap, request);
-  arg = va_arg (ap, void *);
-
-  result = INLINE_SYSCALL (ioctl, 3, fd, request, arg);
-  va_end (ap);
-
-  return result;
-}
-libc_hidden_def (__ioctl)
-weak_alias (__ioctl, ioctl)
+#define pltenter la_or1k_gnu_pltenter
+#define pltexit la_or1k_gnu_pltexit
+#define La_regs La_or1k_regs
+#define La_retval La_or1k_retval
+#define int_retval lrv_r3

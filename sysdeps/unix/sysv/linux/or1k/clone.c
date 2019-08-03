@@ -26,7 +26,7 @@ extern int __or1k_clone (int (*fn)(void *), void *child_stack,
 /* or1k ABI uses stack for varargs, syscall uses registers.
  * This function moves from varargs to regs. */
 int
-clone (int (*fn)(void *), void *child_stack,
+__clone (int (*fn)(void *), void *child_stack,
 	 int flags, void *arg, ...
 	 /* pid_t *ptid, struct user_desc *tls, pid_t *ctid */ )
 {
@@ -55,5 +55,5 @@ syscall_error:
   __set_errno (-err);
   return -1;
 }
-// TODO: remove weak alias to get building, but is it correct?
-//weak_alias (__clone, clone)
+libc_hidden_def (__clone)
+weak_alias (__clone, clone)
