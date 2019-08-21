@@ -23,9 +23,6 @@
 #undef SYS_ify
 #define SYS_ify(syscall_name)   (__NR_##syscall_name)
 
-/* Or1k uses 0x2000 as page size */
-#define MMAP_PAGE_SHIFT 13
-
 /* Linux uses a negative return value to indicate syscall errors,
    unlike most Unices, which use the condition codes' carry flag.
 
