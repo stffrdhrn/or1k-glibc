@@ -61,9 +61,8 @@
 	  "l.add    %0, %0, %1\n\t"			\
 	  "l.lwz    %0, gottpofflo(" #x ")(%0)\n\t"	\
 	  "l.add    %0, %0, %2\n\t"			\
-	  "l.lwz    %0, 0(%0)\n\t"			\
-	  : "=r" (__tlsie) : "r" (TLS_LOAD_GOT),	\
-	    "r" (__tls));				\
+	  : "=&r" (__tlsie) : "r" (TLS_LOAD_GOT),	\
+	    "r" (__tls) : "memory");			\
      __tlsie; })
 
 /* Local Exec:
@@ -79,6 +78,5 @@
      asm ("l.movhi  %0, tpoffha(" #x ")\n\t"		\
 	  "l.add    %0, %0, %1\n\t"			\
 	  "l.addi   %0, %0, tpofflo(" #x ")\n\t"	\
-	  "l.lwz    %0, 0(%0)\n\t"			\
-	  : "=r" (__tlsle) : "r" (__tls));		\
+	  : "=&r" (__tlsle) : "r" (__tls) : "memory");	\
      __tlsle; })

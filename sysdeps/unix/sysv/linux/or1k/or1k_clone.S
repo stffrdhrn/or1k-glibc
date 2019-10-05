@@ -1,6 +1,7 @@
 #include <sysdep.h>
-#include <linux/sched.h>
 #include <tls.h>
+#define __ASSEMBLY__
+#include <linux/sched.h>
 
 .text
 ENTRY(__or1k_clone)
