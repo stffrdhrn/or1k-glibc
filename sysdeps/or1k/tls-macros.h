@@ -1,4 +1,4 @@
-/* Macros to support TLS testing for OpenRISC.
+/* Macros to support TLS testing, OpenRISC version.
    Copyright (C) 2019 Free Software Foundation, Inc.
 
    This file is part of the GNU C Library.

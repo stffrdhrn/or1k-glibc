@@ -1,4 +1,4 @@
-/* Copyright (C) 2011 Free Software Foundation, Inc.
+/* Copyright (C) 2019 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -42,9 +42,9 @@
 
 #undef	DO_CALL
 #define DO_CALL(syscall_name) \
-    l.addi r11, r0, SYS_ify (syscall_name); \
-    l.sys 1; \
-    l.nop
+  l.addi r11, r0, SYS_ify (syscall_name); \
+  l.sys 1; \
+   l.nop
 
 #undef	PSEUDO
 #define PSEUDO(name, syscall_name, args) \

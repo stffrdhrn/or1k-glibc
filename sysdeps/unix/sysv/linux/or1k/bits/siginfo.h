@@ -1,5 +1,5 @@
-/* siginfo_t, sigevent and constants.  Linux x86-64 version.
-   Copyright (C) 2012 Free Software Foundation, Inc.
+/* siginfo_t, sigevent and constants.  Linun OpenRISC version.
+   Copyright (C) 2019 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -15,6 +15,8 @@
    You should have received a copy of the GNU Lesser General Public
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
+
+/* TODO: copied from x86 is this needed?  */
 
 #if !defined _SIGNAL_H && !defined __need_siginfo_t \
     && !defined __need_sigevent_t
