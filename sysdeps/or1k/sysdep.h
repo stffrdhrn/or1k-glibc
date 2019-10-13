@@ -1,6 +1,5 @@
 /* Copyright (C) 2019 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
-   Contributed by Chris Metcalf <cmetcalf@tilera.com>, 2011.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -44,11 +43,32 @@
 #define syscall_error   __syscall_error
 #define mcount          __mcount
 
-/* If compiled for profiling, call `mcount' at the start of each function.
-   The mcount code requires the caller PC in r10.  The `mcount' function
-   sets lr back to the value r10 had on entry when it returns.  */
+/* If compiled for profiling, call `mcount' at the start of each function.  */
 #ifdef  PROF
-#error "No profiling support"
+# ifdef __PIC__
+#  define CALL_MCOUNT						\
+	l.ori	r13, r9, 0;					\
+	l.ori	r15, r3, 0;					\
+	l.jal	8;						\
+	 l.movhi r17, gotpchi(_GLOBAL_OFFSET_TABLE_-4);		\
+	l.ori	r17, r17, gotpclo(_GLOBAL_OFFSET_TABLE_+0);	\
+	l.add	r17, r17, r9;					\
+  	l.lwz	r17, got(_mcount)(r17);				\
+	l.jr	r15;						\
+	 l.ori	r3, r13, 0;					\
+	l.ori	r3, r15, 0;					\
+	l.ori	r9, r13, 0;
+# else
+#  define CALL_MCOUNT						\
+	l.ori	r13, r9, 0;					\
+	l.ori	r15, r3, 0;					\
+	l.movhi r17, hi(_mcount);				\
+	l.ori	r17, r15, lo(main);				\
+	l.jr	r17;						\
+	 l.ori	r3, r13, 0;					\
+	l.ori	r3, r15, 0;					\
+	l.ori	r9, r13, 0;
+# endif
 #else
 #define CALL_MCOUNT             /* Do nothing.  */
 #endif

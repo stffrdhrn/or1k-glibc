@@ -1,4 +1,5 @@
-/* Profiling support.  OpenRISC version.
+/* Configuration for math tests: support for exceptions.  OpenRISC no-FPU
+   version.
    Copyright (C) 2019 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
@@ -16,22 +17,13 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-/* Accept 'frompc' address as argument from the function that calls
-   _mcount for profiling.  Use  __builtin_return_address (0)
-   for the 'selfpc' address.  */
+#ifndef OR1K_NOFPU_MATH_TESTS_EXCEPTIONS_H
+#define OR1K_NOFPU_MATH_TESTS_EXCEPTIONS_H 1
 
-#include <sysdep.h>
+/* We support setting floating-point exception flags on hard-float
+   targets.  These are not supported on soft-float targets.  */
+#define EXCEPTION_TESTS_float 0
+#define EXCEPTION_TESTS_double        0
+#define EXCEPTION_TESTS_long_double   0
 
-static void mcount_internal (unsigned long frompc,
-			     unsigned long selfpc);
-
-#define _MCOUNT_DECL(frompc, selfpc) \
-static inline void mcount_internal (unsigned long frompc, \
-unsigned long selfpc)
-
-#define MCOUNT								\
-void _mcount (void *frompc)						\
-{									\
-  mcount_internal ((unsigned long) frompc,				\
-		   (unsigned long) RETURN_ADDRESS (0));			\
-}
+#endif /* math-tests-exceptions.h.  */
