@@ -47,27 +47,22 @@
 #ifdef  PROF
 # ifdef __PIC__
 #  define CALL_MCOUNT						\
-	l.ori	r13, r9, 0;					\
-	l.ori	r15, r3, 0;					\
-	l.jal	8;						\
-	 l.movhi r17, gotpchi(_GLOBAL_OFFSET_TABLE_-4);		\
-	l.ori	r17, r17, gotpclo(_GLOBAL_OFFSET_TABLE_+0);	\
-	l.add	r17, r17, r9;					\
-  	l.lwz	r17, got(_mcount)(r17);				\
-	l.jr	r15;						\
-	 l.ori	r3, r13, 0;					\
-	l.ori	r3, r15, 0;					\
-	l.ori	r9, r13, 0;
+	l.addi	r1, r1, -4;					\
+	l.sw	0(r1), r9;					\
+	l.jr	plt(_mcount);					\
+	 l.nop;							\
+	l.lwz	r9, 0(r1);					\
+	l.addi	r1, r1, 4;
 # else
 #  define CALL_MCOUNT						\
-	l.ori	r13, r9, 0;					\
-	l.ori	r15, r3, 0;					\
-	l.movhi r17, hi(_mcount);				\
-	l.ori	r17, r15, lo(main);				\
-	l.jr	r17;						\
-	 l.ori	r3, r13, 0;					\
-	l.ori	r3, r15, 0;					\
-	l.ori	r9, r13, 0;
+	l.addi	r1, r1, -4;					\
+	l.sw	0(r1), r9;					\
+	l.movhi r15, hi(_mcount);				\
+	l.ori	r15, r15, lo(_mcount);				\
+	l.jr	r15;						\
+	 l.nop;							\
+	l.lwz	r9, 0(r1);					\
+	l.addi	r1, r1, 4;
 # endif
 #else
 #define CALL_MCOUNT             /* Do nothing.  */
