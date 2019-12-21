@@ -35,13 +35,13 @@ __feraiseexcept (int excepts)
   if (excepts & FE_INEXACT)
   {
     float d = 1.0, x = 3.0;
-    __asm__ volatile ("lf.div.s %0, %1, %0" : "+r" (d) : "r" (x));
+    __asm__ volatile ("lf.div.s %0, %0, %1" : "+r" (d) : "r" (x));
   }
 
   if (excepts & FE_UNDERFLOW)
   {
-    float d = FLT_MIN, x = 10;
-    __asm__ volatile ("lf.div.s %0, %1, %0" : "+r" (d) : "r" (x));
+    float d = FLT_MIN;
+    __asm__ volatile ("lf.mul.s %0, %0, %0" : "+r" (d));
   }
 
   if (excepts & FE_OVERFLOW)
@@ -53,7 +53,7 @@ __feraiseexcept (int excepts)
   if (excepts & FE_DIVBYZERO)
   {
     float d = 1.0, x = 0.0;
-    __asm__ volatile ("lf.div.s %0, %1, %0" : "+r" (d) : "r" (x));
+    __asm__ volatile ("lf.div.s %0, %0, %1" : "+r" (d) : "r" (x));
   }
 
   if (excepts & FE_INVALID)
