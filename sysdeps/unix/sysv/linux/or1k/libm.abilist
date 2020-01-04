@@ -361,16 +361,9 @@ GLIBC_2.15 __yn_finite F
 GLIBC_2.15 __ynf_finite F
 GLIBC_2.18 __issignaling F
 GLIBC_2.18 __issignalingf F
-GLIBC_2.2 feclearexcept F
 GLIBC_2.2 fedisableexcept F
 GLIBC_2.2 feenableexcept F
-GLIBC_2.2 fegetenv F
 GLIBC_2.2 fegetexcept F
-GLIBC_2.2 fegetexceptflag F
-GLIBC_2.2 feraiseexcept F
-GLIBC_2.2 fesetenv F
-GLIBC_2.2 fesetexceptflag F
-GLIBC_2.2 feupdateenv F
 GLIBC_2.23 __signgam D 0x4
 GLIBC_2.23 lgamma F
 GLIBC_2.23 lgammaf F
