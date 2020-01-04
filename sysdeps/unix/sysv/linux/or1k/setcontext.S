@@ -1,0 +1,85 @@
+/* Set current context.  OpenRISC version.
+   Copyright (C) 2019 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+
+#include <sysdep.h>
+#include "ucontext_i.h"
+
+/* int setcontext (const ucontext_t *ucp) */
+	.text
+ENTRY(__setcontext)
+	l.ori	r12, r3, 0
+
+	/* Restore signal mask.  */
+	/* rt_sigprocmask (SIG_SETMASK, &ucp->uc_sigmask, NULL, _NSIG8) */
+	l.ori	r6, r0, _NSIG8
+	l.addi	r5, r3, UCONTEXT_SIGMASK
+	l.ori	r4, r0, 0
+	l.ori	r3, r0, SIG_SETMASK
+	l.ori	r11, r0, SYS_ify (rt_sigprocmask)
+	/* Do the syscall.  */
+	l.sys 1
+	 l.nop
+
+	/* if -4096 < ret < 0 holds, it's an error */
+	l.sfgeui r11, 0xf001
+	l.bf	1f
+	 l.nop
+
+	/* Restore argument registers, for the makecontext() case.  */
+	l.lwz	r3, (UCONTEXT_MCONTEXT +  3*4)(r12)
+	l.lwz	r4, (UCONTEXT_MCONTEXT +  4*4)(r12)
+	l.lwz	r5, (UCONTEXT_MCONTEXT +  5*4)(r12)
+	l.lwz	r6, (UCONTEXT_MCONTEXT +  6*4)(r12)
+	l.lwz	r7, (UCONTEXT_MCONTEXT +  7*4)(r12)
+	l.lwz	r8, (UCONTEXT_MCONTEXT +  8*4)(r12)
+
+	/* Restore registers stored in getcontext().  */
+	l.lwz	r1,  (UCONTEXT_MCONTEXT +  1*4)(r12)
+	l.lwz	r2,  (UCONTEXT_MCONTEXT +  2*4)(r12)
+	l.lwz	r9,  (UCONTEXT_MCONTEXT +  9*4)(r12)
+	l.lwz	r10, (UCONTEXT_MCONTEXT + 10*4)(r12)
+	l.lwz	r11, (UCONTEXT_MCONTEXT + 11*4)(r12)
+	l.lwz	r14, (UCONTEXT_MCONTEXT + 14*4)(r12)
+	l.lwz	r16, (UCONTEXT_MCONTEXT + 16*4)(r12)
+	l.lwz	r18, (UCONTEXT_MCONTEXT + 18*4)(r12)
+	l.lwz	r20, (UCONTEXT_MCONTEXT + 20*4)(r12)
+	l.lwz	r22, (UCONTEXT_MCONTEXT + 22*4)(r12)
+	l.lwz	r24, (UCONTEXT_MCONTEXT + 24*4)(r12)
+	l.lwz	r26, (UCONTEXT_MCONTEXT + 26*4)(r12)
+	l.lwz	r28, (UCONTEXT_MCONTEXT + 28*4)(r12)
+	l.lwz	r30, (UCONTEXT_MCONTEXT + 30*4)(r12)
+
+	l.jr	r11
+ 	 l.ori	r11, r0, 0
+
+1:	l.j	__syscall_error
+	 l.ori	r3, r11, 0
+
+PSEUDO_END (__setcontext)
+weak_alias (__setcontext, setcontext)
+
+ENTRY(__startcontext)
+	l.ori	r3, r14, 0
+	l.sfeq	r3, r0
+	/* If uc_link is not 0 resume there, otherwise exit.  */
+	l.bnf	__setcontext
+	 l.nop
+
+	l.j	exit
+	 l.nop
+END(__startcontext)
