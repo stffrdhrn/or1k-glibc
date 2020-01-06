@@ -49,7 +49,7 @@
 #  define CALL_MCOUNT						\
 	l.addi	r1, r1, -4;					\
 	l.sw	0(r1), r9;					\
-	l.jr	plt(_mcount);					\
+	l.j	plt(_mcount);					\
 	 l.nop;							\
 	l.lwz	r9, 0(r1);					\
 	l.addi	r1, r1, 4;

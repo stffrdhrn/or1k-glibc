@@ -25,28 +25,28 @@ ENTRY(__swapcontext)
 
 	/* Same as getcontext().  */
 	/* Store r1, the stack pointer.  */
-	l.sw	(UCONTEXT_MCONTEXT +  1*4)(r4), r1
+	l.sw	(UCONTEXT_MCONTEXT +  1*4)(r3), r1
 	/* Store r2, the frame pointer.  */
-	l.sw	(UCONTEXT_MCONTEXT +  2*4)(r4), r2
+	l.sw	(UCONTEXT_MCONTEXT +  2*4)(r3), r2
 	/* Store r9, the link register.  */
-	l.sw	(UCONTEXT_MCONTEXT +  9*4)(r4), r9
+	l.sw	(UCONTEXT_MCONTEXT +  9*4)(r3), r9
 	/* Store r9 to reg[11] too, as we need two links for makecontext().  */
-	l.sw	(UCONTEXT_MCONTEXT + 11*4)(r4), r9
+	l.sw	(UCONTEXT_MCONTEXT + 11*4)(r3), r9
 	/* Store r10, the TLS register.  */
-	l.sw	(UCONTEXT_MCONTEXT + 10*4)(r4), r10
+	l.sw	(UCONTEXT_MCONTEXT + 10*4)(r3), r10
 	/* Store r14-r30 even, callee saved registers.  */
-	l.sw	(UCONTEXT_MCONTEXT + 14*4)(r4), r14
-	l.sw	(UCONTEXT_MCONTEXT + 16*4)(r4), r16
-	l.sw	(UCONTEXT_MCONTEXT + 18*4)(r4), r18
-	l.sw	(UCONTEXT_MCONTEXT + 20*4)(r4), r20
-	l.sw	(UCONTEXT_MCONTEXT + 22*4)(r4), r22
-	l.sw	(UCONTEXT_MCONTEXT + 24*4)(r4), r24
-	l.sw	(UCONTEXT_MCONTEXT + 26*4)(r4), r26
-	l.sw	(UCONTEXT_MCONTEXT + 28*4)(r4), r28
-	l.sw	(UCONTEXT_MCONTEXT + 30*4)(r4), r30
+	l.sw	(UCONTEXT_MCONTEXT + 14*4)(r3), r14
+	l.sw	(UCONTEXT_MCONTEXT + 16*4)(r3), r16
+	l.sw	(UCONTEXT_MCONTEXT + 18*4)(r3), r18
+	l.sw	(UCONTEXT_MCONTEXT + 20*4)(r3), r20
+	l.sw	(UCONTEXT_MCONTEXT + 22*4)(r3), r22
+	l.sw	(UCONTEXT_MCONTEXT + 24*4)(r3), r24
+	l.sw	(UCONTEXT_MCONTEXT + 26*4)(r3), r26
+	l.sw	(UCONTEXT_MCONTEXT + 28*4)(r3), r28
+	l.sw	(UCONTEXT_MCONTEXT + 30*4)(r3), r30
 
 	/* Store ucp to non-argument syscall preserved resiger.  */
-	l.ori	r12, r3, 0
+	l.ori	r12, r4, 0
 
 	/* Get signal mask.  */
 	/* rt_sigprocmask (SIG_BLOCK, NULL, &ucp->uc_sigmask, _NSIG8) */
@@ -69,8 +69,8 @@ ENTRY(__swapcontext)
 	/* Restore signal mask.  */
 	/* rt_sigprocmask (SIG_SETMASK, &ucp->uc_sigmask, NULL, _NSIG8) */
 	l.ori	r6, r0, _NSIG8
-	l.addi	r5, r3, UCONTEXT_SIGMASK
-	l.ori	r4, r0, 0
+	l.ori	r5, r0, 0
+	l.addi	r4, r12, UCONTEXT_SIGMASK
 	l.ori	r3, r0, SIG_SETMASK
 	l.ori	r11, r0, SYS_ify (rt_sigprocmask)
 	/* Do the syscall.  */
@@ -112,5 +112,5 @@ ENTRY(__swapcontext)
 1:	l.j	__syscall_error
 	 l.ori	r3, r11, 0
 
-PSEUDO_END (__swapcontext)
+END (__swapcontext)
 weak_alias (__swapcontext, swapcontext)

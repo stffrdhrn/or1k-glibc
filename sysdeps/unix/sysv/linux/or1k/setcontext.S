@@ -27,8 +27,8 @@ ENTRY(__setcontext)
 	/* Restore signal mask.  */
 	/* rt_sigprocmask (SIG_SETMASK, &ucp->uc_sigmask, NULL, _NSIG8) */
 	l.ori	r6, r0, _NSIG8
-	l.addi	r5, r3, UCONTEXT_SIGMASK
-	l.ori	r4, r0, 0
+	l.ori	r5, r0, 0
+	l.addi	r4, r3, UCONTEXT_SIGMASK
 	l.ori	r3, r0, SIG_SETMASK
 	l.ori	r11, r0, SYS_ify (rt_sigprocmask)
 	/* Do the syscall.  */
@@ -70,7 +70,7 @@ ENTRY(__setcontext)
 1:	l.j	__syscall_error
 	 l.ori	r3, r11, 0
 
-PSEUDO_END (__setcontext)
+END (__setcontext)
 weak_alias (__setcontext, setcontext)
 
 ENTRY(__startcontext)
@@ -80,6 +80,19 @@ ENTRY(__startcontext)
 	l.bnf	__setcontext
 	 l.nop
 
-	l.j	exit
+#ifdef SHARED
+	/* Obtain a pointer to .got in r16 */
+	l.jal	.LPC0
 	 l.nop
+.LPC0:
+	l.movhi	r16, gotpchi(_GLOBAL_OFFSET_TABLE_+(.-.LPC0))
+	l.ori	r16, r16, gotpclo(_GLOBAL_OFFSET_TABLE_+(.-.LPC0))
+	l.add	r16, r16, r9
+	l.lwz	r16, got(exit)(r16)
+	l.jr	r16
+#else
+	l.j	exit
+#endif
+	 l.nop
+
 END(__startcontext)

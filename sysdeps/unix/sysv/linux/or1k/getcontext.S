@@ -65,9 +65,8 @@ ENTRY(__getcontext)
 	l.jr	r9
  	 l.ori r11, r0, 0
 
-1: 
-	l.j	__syscall_error
+1:	l.j	__syscall_error
 	 l.ori	r3, r11, 0
 
-PSEUDO_END(__getcontext)
+END(__getcontext)
 weak_alias(__getcontext, getcontext)
