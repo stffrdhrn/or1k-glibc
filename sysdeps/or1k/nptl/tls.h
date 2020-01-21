@@ -29,8 +29,6 @@
 
 typedef struct
 {
-  /* TODO: uintptr_t pointer_guard;
-   * TODO: uintptr_t stack_guard; */
   dtv_t *dtv;
 } tcbhead_t;
 
