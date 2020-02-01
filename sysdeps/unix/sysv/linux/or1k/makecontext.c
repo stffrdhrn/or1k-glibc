@@ -54,20 +54,20 @@ __makecontext (ucontext_t *ucp, void (*func) (void), int argc, ...)
   sp = (unsigned long*) (((uintptr_t) sp) & -4L);
 
   /* Keep uc_link in r14.  */
-  ucp->uc_mcontext.regs[14] = (uintptr_t) ucp->uc_link;
+  ucp->uc_mcontext.__gprs[14] = (uintptr_t) ucp->uc_link;
   /* Return address points to __startcontext().  */
-  ucp->uc_mcontext.regs[9] = (uintptr_t) &__startcontext;
+  ucp->uc_mcontext.__gprs[9] = (uintptr_t) &__startcontext;
   /* Frame pointer is null.  */
-  ucp->uc_mcontext.regs[2] = (uintptr_t) 0;
+  ucp->uc_mcontext.__gprs[2] = (uintptr_t) 0;
   /* Restart in user-space starting at 'func'.  */
-  ucp->uc_mcontext.regs[11] = (uintptr_t) func;
+  ucp->uc_mcontext.__gprs[11] = (uintptr_t) func;
   /* Set stack pointer.  */
-  ucp->uc_mcontext.regs[1] = (uintptr_t) sp;
+  ucp->uc_mcontext.__gprs[1] = (uintptr_t) sp;
 
   va_start (ap, argc);
   for (i = 0; i < argc; ++i)
     if (i < 6)
-      ucp->uc_mcontext.regs[i + 3] = va_arg (ap, unsigned long);
+      ucp->uc_mcontext.__gprs[i + 3] = va_arg (ap, unsigned long);
     else
       sp[i - 6] = va_arg (ap, unsigned long);
 

@@ -30,7 +30,7 @@
 /* Context to describe whole processor state.  */
 typedef struct
   {
-    unsigned long regs[32];
+    unsigned long __gprs[32];
   } mcontext_t;
 
 /* Userlevel context.  */
