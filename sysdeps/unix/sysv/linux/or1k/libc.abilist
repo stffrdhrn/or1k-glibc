@@ -736,6 +736,7 @@ GLIBC_2.0 mbsrtowcs F
 GLIBC_2.0 mbstowcs F
 GLIBC_2.0 mbtowc F
 GLIBC_2.0 mcheck F
+GLIBC_2.0 mcount F
 GLIBC_2.0 memalign F
 GLIBC_2.0 memccpy F
 GLIBC_2.0 memchr F
