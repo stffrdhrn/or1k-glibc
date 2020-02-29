@@ -86,6 +86,8 @@ L(pseudo_end): \
 
 #include <errno.h>
 
+extern long int __syscall_error (long int neg_errno);
+
 /* Pointer mangling is not yet supported for or1k.
  * TODO: Implement pointer guards */
 #define PTR_MANGLE(var) (void) (var)
