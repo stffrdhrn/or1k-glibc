@@ -103,8 +103,8 @@ L(oldpid):
 	 l.lwz	r3, 4(r1)
 
 	/* Exit the child thread.  */
-	l.jal	HIDDEN_JUMPTARGET(_exit)
-	 l.ori	r3, r11, 0
+	l.ori	r3, r11, 0
+	DO_CALL (exit)
 
 L(error):
 	l.j	SYSCALL_ERROR_NAME
