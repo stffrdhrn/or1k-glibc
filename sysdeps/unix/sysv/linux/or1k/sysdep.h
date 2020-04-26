@@ -93,24 +93,13 @@ extern long int __syscall_error (long int neg_errno);
 #define PTR_MANGLE(var) (void) (var)
 #define PTR_DEMANGLE(var) (void) (var)
 
-#undef INLINE_SYSCALL
-#define INLINE_SYSCALL(name, nr, args...) \
-        ({                                                                     \
-         unsigned int resultvar = INTERNAL_SYSCALL (name, , nr, args);         \
-         if (__builtin_expect (INTERNAL_SYSCALL_ERROR_P (resultvar, ), 0))     \
-           {                                                                   \
-             __set_errno (INTERNAL_SYSCALL_ERRNO (resultvar, ));               \
-             resultvar = 0xffffffff;                                           \
-           }                                                                   \
-         (int) resultvar; })
-
 #undef INTERNAL_SYSCALL
-#define INTERNAL_SYSCALL(name, err, nr, args...) \
-	INTERNAL_SYSCALL_NCS (SYS_ify (name), err, nr, args)
+#define INTERNAL_SYSCALL(name, nr, args...) \
+	INTERNAL_SYSCALL_NCS (SYS_ify (name), nr, args)
 
 /* The _NCS variant allows non-constant syscall numbers.  */
 #undef INTERNAL_SYSCALL_NCS
-#define INTERNAL_SYSCALL_NCS(number, err, nr, args...) \
+#define INTERNAL_SYSCALL_NCS(number, nr, args...) \
         ({ unsigned long __sys_result;                                         \
           {                                                                    \
             long _sc_ret = (long) number;                                      \
@@ -127,26 +116,6 @@ extern long int __syscall_error (long int neg_errno);
             __sys_result = __sc_ret;                                           \
           }                                                                    \
           (long) __sys_result; })
-
-/* INTERNAL_SYSCALL_DECL - Allows us to setup some function static
-   value to use within the context of the syscall.
-
-   We do not use it */
-#undef INTERNAL_SYSCALL_DECL
-#define INTERNAL_SYSCALL_DECL(err) do { } while (0)
-
-/* INTERNAL_SYSCALL_ERROR_P - Returns 0 if it wasn't an error, 1 otherwise
-   You are allowed to use the syscall result (val) and the DECL error
-   variable to determine what went wrong. */
-#undef INTERNAL_SYSCALL_ERROR_P
-#define INTERNAL_SYSCALL_ERROR_P(val, err) \
-    ((unsigned int) (val) >= 0xfffff001u)
-
-
-/* INTERLAL_SYSCALL_ERRNO - Munges the val/err pair into the error number.
-   In our case we just flip the sign. */
-#undef INTERNAL_SYSCALL_ERRNO
-#define INTERNAL_SYSCALL_ERRNO(val, err)        (-(val))
 
 /* From here on we have nested macros that generate code for
  * storing arguments to the syscall */

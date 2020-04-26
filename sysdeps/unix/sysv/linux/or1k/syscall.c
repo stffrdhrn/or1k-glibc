@@ -1,4 +1,4 @@
-/* system call interface.  OpenRISC version.
+/* System call interface.  OpenRISC version.
    Copyright (C) 2020 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
@@ -25,7 +25,6 @@ syscall (long int syscall_number, ...)
   unsigned long arg1, arg2, arg3, arg4, arg5, arg6;
   va_list arg;
   long int ret;
-  INTERNAL_SYSCALL_DECL (err);
 
   va_start (arg, syscall_number);
   arg1 = va_arg (arg, unsigned long);
@@ -36,10 +35,10 @@ syscall (long int syscall_number, ...)
   arg6 = va_arg (arg, unsigned long);
   va_end (arg);
 
-  ret = INTERNAL_SYSCALL_NCS (syscall_number, err, 6, arg1, arg2, arg3, arg4,
+  ret = INTERNAL_SYSCALL_NCS (syscall_number, 6, arg1, arg2, arg3, arg4,
 			      arg5, arg6);
 
-  if (INTERNAL_SYSCALL_ERROR_P (ret, err))
+  if (INTERNAL_SYSCALL_ERROR_P (ret))
     return __syscall_error (ret);
 
   return ret;
