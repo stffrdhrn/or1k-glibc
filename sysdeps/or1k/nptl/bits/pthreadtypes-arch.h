@@ -14,7 +14,7 @@
 
    You should have received a copy of the GNU Lesser General Public
    License along with the GNU C Library; if not, see
-   <http://www.gnu.org/licenses/>.  */
+   <https://www.gnu.org/licenses/>.  */
 
 #ifndef _BITS_PTHREADTYPES_H
 #define _BITS_PTHREADTYPES_H	1
@@ -50,24 +50,5 @@
 
 #define __LOCK_ALIGNMENT
 #define __ONCE_ALIGNMENT
-
-struct __pthread_rwlock_arch_t
-{
-  unsigned int __readers;
-  unsigned int __writers;
-  unsigned int __wrphase_futex;
-  unsigned int __writers_futex;
-  unsigned int __pad1;
-  unsigned int __pad2;
-  int __cur_writer;
-  int __shared;
-  unsigned int __pad3;
-  /* FLAGS must stay at this position in the structure to maintain
-     binary compatibility.  */
-  unsigned int __flags;
-  unsigned int __pad4;
-};
-
-#define __PTHREAD_RWLOCK_ELISION_EXTRA 		0
 
 #endif	/* bits/pthreadtypes.h */
