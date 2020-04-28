@@ -7,7 +7,6 @@
 #define __NR_bind 200
 #define __NR_bpf 280
 #define __NR_brk 214
-#define __NR_cacheflush 245
 #define __NR_capget 90
 #define __NR_capset 91
 #define __NR_chdir 49
@@ -165,6 +164,7 @@
 #define __NR_open_tree 428
 #define __NR_openat 56
 #define __NR_openat2 437
+#define __NR_or1k_atomic 244
 #define __NR_perf_event_open 241
 #define __NR_personality 92
 #define __NR_pidfd_getfd 438
@@ -202,6 +202,7 @@
 #define __NR_recvmsg 212
 #define __NR_remap_file_pages 234
 #define __NR_removexattr 14
+#define __NR_renameat 38
 #define __NR_renameat2 276
 #define __NR_request_key 218
 #define __NR_restart_syscall 128
@@ -240,7 +241,6 @@
 #define __NR_sendto 206
 #define __NR_set_mempolicy 237
 #define __NR_set_robust_list 99
-#define __NR_set_thread_area 244
 #define __NR_set_tid_address 96
 #define __NR_setdomainname 162
 #define __NR_setfsgid 152

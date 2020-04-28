@@ -87,8 +87,7 @@ L(pseudo_end): \
 
 extern long int __syscall_error (long int neg_errno);
 
-/* Pointer mangling is not yet supported for or1k.
- * TODO: Implement pointer guards */
+/* Pointer mangling is not yet supported for or1k.  */
 #define PTR_MANGLE(var) (void) (var)
 #define PTR_DEMANGLE(var) (void) (var)
 
