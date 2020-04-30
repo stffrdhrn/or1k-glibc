@@ -1,8 +1,5 @@
-/* Set flags signalling availability of kernel features based on given
-   kernel version number.  OpenRISC version.
-
+/* Profile counter helper to get PC from sigcontext. OpenRISC version.
    Copyright (C) 2020 Free Software Foundation, Inc.
-
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -19,6 +16,13 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
-#include_next <kernel-features.h>
+#ifndef _SIGCONTEXTINFO_H
+#define _SIGCONTEXTINFO_H
 
-#undef __ASSUME_SET_ROBUST_LIST
+static inline uintptr_t
+sigcontext_get_pc (const ucontext_t *ctx)
+{
+ return ctx->uc_mcontext.__gprs[11];
+}
+
+#endif
