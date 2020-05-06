@@ -22,7 +22,7 @@
 int
 feclearexcept (int excepts)
 {
-  int cw;
+  fpu_control_t cw;
 
   /* Mask out unsupported bits/exceptions.  */
   excepts &= FE_ALL_EXCEPT;

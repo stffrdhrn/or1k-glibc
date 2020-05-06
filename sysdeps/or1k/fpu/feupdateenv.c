@@ -22,7 +22,7 @@
 int
 __feupdateenv (const fenv_t *envp)
 {
-  int temp;
+  fpu_control_t temp;
 
   /* Save current exceptions.  */
   _FPU_GETCW (temp);

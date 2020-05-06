@@ -22,7 +22,7 @@
 int
 fetestexcept (int excepts)
 {
-  int cw;
+  fpu_control_t cw;
 
   /* Get current control word.  */
   _FPU_GETCW (cw);

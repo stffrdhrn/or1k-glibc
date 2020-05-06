@@ -32,7 +32,7 @@ extern fpu_control_t __fpu_control;
 
 # define _FPU_RESERVED 0xfffff000
 # define _FPU_DEFAULT  0
-# define _FPU_IEEE     1          /* FPU traps enabled.  */
+# define _FPU_IEEE     _FPU_DEFAULT
 
 /* Type of the control word.  */
 typedef unsigned int fpu_control_t;
