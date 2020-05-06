@@ -4,13 +4,10 @@ GLIBC_2.32 _IO_funlockfile F
 GLIBC_2.32 __close F
 GLIBC_2.32 __connect F
 GLIBC_2.32 __errno_location F
-GLIBC_2.32 __fcntl F
-GLIBC_2.32 __fork F
 GLIBC_2.32 __h_errno_location F
 GLIBC_2.32 __libc_allocate_rtsig F
 GLIBC_2.32 __libc_current_sigrtmax F
 GLIBC_2.32 __libc_current_sigrtmin F
-GLIBC_2.32 __libpthread_version_placeholder F
 GLIBC_2.32 __lseek F
 GLIBC_2.32 __open F
 GLIBC_2.32 __open64 F
@@ -60,13 +57,10 @@ GLIBC_2.32 cnd_signal F
 GLIBC_2.32 cnd_timedwait F
 GLIBC_2.32 cnd_wait F
 GLIBC_2.32 connect F
-GLIBC_2.32 fcntl F
 GLIBC_2.32 flockfile F
-GLIBC_2.32 fork F
 GLIBC_2.32 fsync F
 GLIBC_2.32 ftrylockfile F
 GLIBC_2.32 funlockfile F
-GLIBC_2.32 longjmp F
 GLIBC_2.32 lseek F
 GLIBC_2.32 lseek64 F
 GLIBC_2.32 msync F
@@ -81,7 +75,6 @@ GLIBC_2.32 open64 F
 GLIBC_2.32 pause F
 GLIBC_2.32 pread F
 GLIBC_2.32 pread64 F
-GLIBC_2.32 pthread_atfork F
 GLIBC_2.32 pthread_attr_getaffinity_np F
 GLIBC_2.32 pthread_attr_getguardsize F
 GLIBC_2.32 pthread_attr_getstack F
@@ -210,9 +203,7 @@ GLIBC_2.32 send F
 GLIBC_2.32 sendmsg F
 GLIBC_2.32 sendto F
 GLIBC_2.32 sigaction F
-GLIBC_2.32 siglongjmp F
 GLIBC_2.32 sigwait F
-GLIBC_2.32 system F
 GLIBC_2.32 tcdrain F
 GLIBC_2.32 thrd_create F
 GLIBC_2.32 thrd_detach F

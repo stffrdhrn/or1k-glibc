@@ -94,9 +94,6 @@ GLIBC_2.32 _IO_sprintf F
 GLIBC_2.32 _IO_sputbackc F
 GLIBC_2.32 _IO_sputbackwc F
 GLIBC_2.32 _IO_sscanf F
-GLIBC_2.32 _IO_stderr_ D 0x50
-GLIBC_2.32 _IO_stdin_ D 0x50
-GLIBC_2.32 _IO_stdout_ D 0x50
 GLIBC_2.32 _IO_str_init_readonly F
 GLIBC_2.32 _IO_str_init_static F
 GLIBC_2.32 _IO_str_overflow F
@@ -114,7 +111,6 @@ GLIBC_2.32 _IO_ungetc F
 GLIBC_2.32 _IO_unsave_markers F
 GLIBC_2.32 _IO_unsave_wmarkers F
 GLIBC_2.32 _IO_vfprintf F
-GLIBC_2.32 _IO_vfscanf F
 GLIBC_2.32 _IO_vsprintf F
 GLIBC_2.32 _IO_wdefault_doallocate F
 GLIBC_2.32 _IO_wdefault_finish F
@@ -155,15 +151,9 @@ GLIBC_2.32 __close F
 GLIBC_2.32 __cmsg_nxthdr F
 GLIBC_2.32 __confstr_chk F
 GLIBC_2.32 __connect F
-GLIBC_2.32 __ctype32_b D 0x4
-GLIBC_2.32 __ctype32_tolower D 0x4
-GLIBC_2.32 __ctype32_toupper D 0x4
-GLIBC_2.32 __ctype_b D 0x4
 GLIBC_2.32 __ctype_b_loc F
 GLIBC_2.32 __ctype_get_mb_cur_max F
-GLIBC_2.32 __ctype_tolower D 0x4
 GLIBC_2.32 __ctype_tolower_loc F
-GLIBC_2.32 __ctype_toupper D 0x4
 GLIBC_2.32 __ctype_toupper_loc F
 GLIBC_2.32 __curbrk D 0x4
 GLIBC_2.32 __cxa_at_quick_exit F
@@ -299,7 +289,6 @@ GLIBC_2.32 __lseek F
 GLIBC_2.32 __lxstat F
 GLIBC_2.32 __lxstat64 F
 GLIBC_2.32 __malloc_hook D 0x4
-GLIBC_2.32 __malloc_initialize_hook D 0x4
 GLIBC_2.32 __mbrlen F
 GLIBC_2.32 __mbrtowc F
 GLIBC_2.32 __mbsnrtowcs_chk F
@@ -310,7 +299,6 @@ GLIBC_2.32 __memcpy_chk F
 GLIBC_2.32 __memmove_chk F
 GLIBC_2.32 __mempcpy F
 GLIBC_2.32 __mempcpy_chk F
-GLIBC_2.32 __mempcpy_small F
 GLIBC_2.32 __memset_chk F
 GLIBC_2.32 __monstartup F
 GLIBC_2.32 __morecore D 0x4
@@ -318,12 +306,7 @@ GLIBC_2.32 __nanosleep F
 GLIBC_2.32 __newlocale F
 GLIBC_2.32 __nl_langinfo_l F
 GLIBC_2.32 __nss_configure_lookup F
-GLIBC_2.32 __nss_database_lookup F
-GLIBC_2.32 __nss_group_lookup F
 GLIBC_2.32 __nss_hostname_digits_dots F
-GLIBC_2.32 __nss_hosts_lookup F
-GLIBC_2.32 __nss_next F
-GLIBC_2.32 __nss_passwd_lookup F
 GLIBC_2.32 __obstack_printf_chk F
 GLIBC_2.32 __obstack_vprintf_chk F
 GLIBC_2.32 __open F
@@ -378,15 +361,11 @@ GLIBC_2.32 __sched_getparam F
 GLIBC_2.32 __sched_getscheduler F
 GLIBC_2.32 __sched_setscheduler F
 GLIBC_2.32 __sched_yield F
-GLIBC_2.32 __secure_getenv F
 GLIBC_2.32 __select F
 GLIBC_2.32 __send F
 GLIBC_2.32 __setmntent F
 GLIBC_2.32 __setpgid F
 GLIBC_2.32 __sigaction F
-GLIBC_2.32 __sigaddset F
-GLIBC_2.32 __sigdelset F
-GLIBC_2.32 __sigismember F
 GLIBC_2.32 __signbit F
 GLIBC_2.32 __signbitf F
 GLIBC_2.32 __sigpause F
@@ -398,7 +377,6 @@ GLIBC_2.32 __stack_chk_fail F
 GLIBC_2.32 __statfs F
 GLIBC_2.32 __stpcpy F
 GLIBC_2.32 __stpcpy_chk F
-GLIBC_2.32 __stpcpy_small F
 GLIBC_2.32 __stpncpy F
 GLIBC_2.32 __stpncpy_chk F
 GLIBC_2.32 __strcasecmp F
@@ -407,10 +385,6 @@ GLIBC_2.32 __strcasestr F
 GLIBC_2.32 __strcat_chk F
 GLIBC_2.32 __strcoll_l F
 GLIBC_2.32 __strcpy_chk F
-GLIBC_2.32 __strcpy_small F
-GLIBC_2.32 __strcspn_c1 F
-GLIBC_2.32 __strcspn_c2 F
-GLIBC_2.32 __strcspn_c3 F
 GLIBC_2.32 __strdup F
 GLIBC_2.32 __strerror_r F
 GLIBC_2.32 __strfmon_l F
@@ -419,38 +393,26 @@ GLIBC_2.32 __strncasecmp_l F
 GLIBC_2.32 __strncat_chk F
 GLIBC_2.32 __strncpy_chk F
 GLIBC_2.32 __strndup F
-GLIBC_2.32 __strpbrk_c2 F
-GLIBC_2.32 __strpbrk_c3 F
-GLIBC_2.32 __strsep_1c F
-GLIBC_2.32 __strsep_2c F
-GLIBC_2.32 __strsep_3c F
 GLIBC_2.32 __strsep_g F
-GLIBC_2.32 __strspn_c1 F
-GLIBC_2.32 __strspn_c2 F
-GLIBC_2.32 __strspn_c3 F
 GLIBC_2.32 __strtod_internal F
 GLIBC_2.32 __strtod_l F
 GLIBC_2.32 __strtof_internal F
 GLIBC_2.32 __strtof_l F
 GLIBC_2.32 __strtok_r F
-GLIBC_2.32 __strtok_r_1c F
 GLIBC_2.32 __strtol_internal F
 GLIBC_2.32 __strtol_l F
 GLIBC_2.32 __strtold_internal F
 GLIBC_2.32 __strtold_l F
 GLIBC_2.32 __strtoll_internal F
 GLIBC_2.32 __strtoll_l F
-GLIBC_2.32 __strtoq_internal F
 GLIBC_2.32 __strtoul_internal F
 GLIBC_2.32 __strtoul_l F
 GLIBC_2.32 __strtoull_internal F
 GLIBC_2.32 __strtoull_l F
-GLIBC_2.32 __strtouq_internal F
 GLIBC_2.32 __strverscmp F
 GLIBC_2.32 __strxfrm_l F
 GLIBC_2.32 __swprintf_chk F
 GLIBC_2.32 __sysconf F
-GLIBC_2.32 __sysctl F
 GLIBC_2.32 __syslog_chk F
 GLIBC_2.32 __sysv_signal F
 GLIBC_2.32 __timezone D 0x4
@@ -544,7 +506,6 @@ GLIBC_2.32 _nl_default_dirname D 0x12
 GLIBC_2.32 _nl_domain_bindings D 0x4
 GLIBC_2.32 _nl_msg_cat_cntr D 0x4
 GLIBC_2.32 _null_auth D 0xc
-GLIBC_2.32 _obstack D 0x4
 GLIBC_2.32 _obstack_allocated_p F
 GLIBC_2.32 _obstack_begin F
 GLIBC_2.32 _obstack_begin_1 F
@@ -556,15 +517,9 @@ GLIBC_2.32 _res_hconf D 0x30
 GLIBC_2.32 _rpc_dtablesize F
 GLIBC_2.32 _seterr_reply F
 GLIBC_2.32 _setjmp F
-GLIBC_2.32 _sys_errlist D 0x1ec
-GLIBC_2.32 _sys_errlist D 0x1f4
-GLIBC_2.32 _sys_errlist D 0x1f8
-GLIBC_2.32 _sys_errlist D 0x210
 GLIBC_2.32 _sys_errlist D 0x21c
 GLIBC_2.32 _sys_nerr D 0x4
-GLIBC_2.32 _sys_siglist D 0x100
 GLIBC_2.32 _sys_siglist D 0x104
-GLIBC_2.32 _sys_siglist D 0x80
 GLIBC_2.32 _tolower F
 GLIBC_2.32 _toupper F
 GLIBC_2.32 a64l F
@@ -578,7 +533,6 @@ GLIBC_2.32 addmntent F
 GLIBC_2.32 addseverity F
 GLIBC_2.32 adjtime F
 GLIBC_2.32 adjtimex F
-GLIBC_2.32 advance F
 GLIBC_2.32 alarm F
 GLIBC_2.32 aligned_alloc F
 GLIBC_2.32 alphasort F
@@ -608,7 +562,6 @@ GLIBC_2.32 argz_stringify F
 GLIBC_2.32 asctime F
 GLIBC_2.32 asctime_r F
 GLIBC_2.32 asprintf F
-GLIBC_2.32 atexit F
 GLIBC_2.32 atof F
 GLIBC_2.32 atoi F
 GLIBC_2.32 atol F
@@ -625,7 +578,6 @@ GLIBC_2.32 backtrace_symbols_fd F
 GLIBC_2.32 basename F
 GLIBC_2.32 bcmp F
 GLIBC_2.32 bcopy F
-GLIBC_2.32 bdflush F
 GLIBC_2.32 bind F
 GLIBC_2.32 bind_textdomain_codeset F
 GLIBC_2.32 bindresvport F
@@ -649,7 +601,6 @@ GLIBC_2.32 cbc_crypt F
 GLIBC_2.32 cfgetispeed F
 GLIBC_2.32 cfgetospeed F
 GLIBC_2.32 cfmakeraw F
-GLIBC_2.32 cfree F
 GLIBC_2.32 cfsetispeed F
 GLIBC_2.32 cfsetospeed F
 GLIBC_2.32 cfsetspeed F
@@ -693,7 +644,6 @@ GLIBC_2.32 copysignf F
 GLIBC_2.32 copysignl F
 GLIBC_2.32 creat F
 GLIBC_2.32 creat64 F
-GLIBC_2.32 create_module F
 GLIBC_2.32 ctermid F
 GLIBC_2.32 ctime F
 GLIBC_2.32 ctime_r F
@@ -786,7 +736,6 @@ GLIBC_2.32 fallocate F
 GLIBC_2.32 fallocate64 F
 GLIBC_2.32 fanotify_init F
 GLIBC_2.32 fanotify_mark F
-GLIBC_2.32 fattach F
 GLIBC_2.32 fchdir F
 GLIBC_2.32 fchflags F
 GLIBC_2.32 fchmod F
@@ -800,7 +749,6 @@ GLIBC_2.32 fcntl64 F
 GLIBC_2.32 fcvt F
 GLIBC_2.32 fcvt_r F
 GLIBC_2.32 fdatasync F
-GLIBC_2.32 fdetach F
 GLIBC_2.32 fdopen F
 GLIBC_2.32 fdopendir F
 GLIBC_2.32 feof F
@@ -914,7 +862,6 @@ GLIBC_2.32 gai_strerror F
 GLIBC_2.32 gcvt F
 GLIBC_2.32 get_avphys_pages F
 GLIBC_2.32 get_current_dir_name F
-GLIBC_2.32 get_kernel_syms F
 GLIBC_2.32 get_myaddress F
 GLIBC_2.32 get_nprocs F
 GLIBC_2.32 get_nprocs_conf F
@@ -976,7 +923,6 @@ GLIBC_2.32 getlogin F
 GLIBC_2.32 getlogin_r F
 GLIBC_2.32 getmntent F
 GLIBC_2.32 getmntent_r F
-GLIBC_2.32 getmsg F
 GLIBC_2.32 getnameinfo F
 GLIBC_2.32 getnetbyaddr F
 GLIBC_2.32 getnetbyaddr_r F
@@ -996,7 +942,6 @@ GLIBC_2.32 getpeername F
 GLIBC_2.32 getpgid F
 GLIBC_2.32 getpgrp F
 GLIBC_2.32 getpid F
-GLIBC_2.32 getpmsg F
 GLIBC_2.32 getppid F
 GLIBC_2.32 getpriority F
 GLIBC_2.32 getprotobyname F
@@ -1163,7 +1108,6 @@ GLIBC_2.32 isalnum_l F
 GLIBC_2.32 isalpha F
 GLIBC_2.32 isalpha_l F
 GLIBC_2.32 isascii F
-GLIBC_2.32 isastream F
 GLIBC_2.32 isatty F
 GLIBC_2.32 isblank F
 GLIBC_2.32 isblank_l F
@@ -1253,15 +1197,11 @@ GLIBC_2.32 listxattr F
 GLIBC_2.32 llabs F
 GLIBC_2.32 lldiv F
 GLIBC_2.32 llistxattr F
-GLIBC_2.32 llseek F
-GLIBC_2.32 loc1 D 0x4
-GLIBC_2.32 loc2 D 0x4
 GLIBC_2.32 localeconv F
 GLIBC_2.32 localtime F
 GLIBC_2.32 localtime_r F
 GLIBC_2.32 lockf F
 GLIBC_2.32 lockf64 F
-GLIBC_2.32 locs D 0x4
 GLIBC_2.32 longjmp F
 GLIBC_2.32 lrand48 F
 GLIBC_2.32 lrand48_r F
@@ -1275,9 +1215,7 @@ GLIBC_2.32 madvise F
 GLIBC_2.32 makecontext F
 GLIBC_2.32 mallinfo F
 GLIBC_2.32 malloc F
-GLIBC_2.32 malloc_get_state F
 GLIBC_2.32 malloc_info F
-GLIBC_2.32 malloc_set_state F
 GLIBC_2.32 malloc_stats F
 GLIBC_2.32 malloc_trim F
 GLIBC_2.32 malloc_usable_size F
@@ -1356,7 +1294,6 @@ GLIBC_2.32 nanosleep F
 GLIBC_2.32 netname2host F
 GLIBC_2.32 netname2user F
 GLIBC_2.32 newlocale F
-GLIBC_2.32 nfsservctl F
 GLIBC_2.32 nftw F
 GLIBC_2.32 nftw64 F
 GLIBC_2.32 ngettext F
@@ -1503,8 +1440,6 @@ GLIBC_2.32 putchar F
 GLIBC_2.32 putchar_unlocked F
 GLIBC_2.32 putenv F
 GLIBC_2.32 putgrent F
-GLIBC_2.32 putmsg F
-GLIBC_2.32 putpmsg F
 GLIBC_2.32 putpwent F
 GLIBC_2.32 puts F
 GLIBC_2.32 putsgent F
@@ -1530,7 +1465,6 @@ GLIBC_2.32 qfcvt_r F
 GLIBC_2.32 qgcvt F
 GLIBC_2.32 qsort F
 GLIBC_2.32 qsort_r F
-GLIBC_2.32 query_module F
 GLIBC_2.32 quick_exit F
 GLIBC_2.32 quotactl F
 GLIBC_2.32 raise F
@@ -1547,7 +1481,6 @@ GLIBC_2.32 re_compile_pattern F
 GLIBC_2.32 re_exec F
 GLIBC_2.32 re_match F
 GLIBC_2.32 re_match_2 F
-GLIBC_2.32 re_max_failures D 0x4
 GLIBC_2.32 re_search F
 GLIBC_2.32 re_search_2 F
 GLIBC_2.32 re_set_registers F
@@ -1586,7 +1519,6 @@ GLIBC_2.32 remque F
 GLIBC_2.32 rename F
 GLIBC_2.32 renameat F
 GLIBC_2.32 renameat2 F
-GLIBC_2.32 res_init F
 GLIBC_2.32 revoke F
 GLIBC_2.32 rewind F
 GLIBC_2.32 rewinddir F
@@ -1732,7 +1664,6 @@ GLIBC_2.32 sigsetmask F
 GLIBC_2.32 sigstack F
 GLIBC_2.32 sigsuspend F
 GLIBC_2.32 sigtimedwait F
-GLIBC_2.32 sigvec F
 GLIBC_2.32 sigwait F
 GLIBC_2.32 sigwaitinfo F
 GLIBC_2.32 sleep F
@@ -1759,8 +1690,6 @@ GLIBC_2.32 statx F
 GLIBC_2.32 stderr D 0x4
 GLIBC_2.32 stdin D 0x4
 GLIBC_2.32 stdout D 0x4
-GLIBC_2.32 step F
-GLIBC_2.32 stime F
 GLIBC_2.32 stpcpy F
 GLIBC_2.32 stpncpy F
 GLIBC_2.32 strcasecmp F
@@ -1874,21 +1803,12 @@ GLIBC_2.32 symlinkat F
 GLIBC_2.32 sync F
 GLIBC_2.32 sync_file_range F
 GLIBC_2.32 syncfs F
-GLIBC_2.32 sys_errlist D 0x1ec
-GLIBC_2.32 sys_errlist D 0x1f4
-GLIBC_2.32 sys_errlist D 0x1f8
-GLIBC_2.32 sys_errlist D 0x210
 GLIBC_2.32 sys_errlist D 0x21c
 GLIBC_2.32 sys_nerr D 0x4
-GLIBC_2.32 sys_sigabbrev D 0x100
 GLIBC_2.32 sys_sigabbrev D 0x104
-GLIBC_2.32 sys_sigabbrev D 0x80
-GLIBC_2.32 sys_siglist D 0x100
 GLIBC_2.32 sys_siglist D 0x104
-GLIBC_2.32 sys_siglist D 0x80
 GLIBC_2.32 syscall F
 GLIBC_2.32 sysconf F
-GLIBC_2.32 sysctl F
 GLIBC_2.32 sysinfo F
 GLIBC_2.32 syslog F
 GLIBC_2.32 system F
@@ -1965,11 +1885,9 @@ GLIBC_2.32 unsetenv F
 GLIBC_2.32 unshare F
 GLIBC_2.32 updwtmp F
 GLIBC_2.32 updwtmpx F
-GLIBC_2.32 uselib F
 GLIBC_2.32 uselocale F
 GLIBC_2.32 user2netname F
 GLIBC_2.32 usleep F
-GLIBC_2.32 ustat F
 GLIBC_2.32 utime F
 GLIBC_2.32 utimensat F
 GLIBC_2.32 utimes F
