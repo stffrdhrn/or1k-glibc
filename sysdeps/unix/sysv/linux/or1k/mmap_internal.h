@@ -19,9 +19,10 @@
 #ifndef MMAP_OR1K_INTERNAL_LINUX_H
 #define MMAP_OR1K_INTERNAL_LINUX_H
 
-/* Linux allows PAGE_SHIFT in range of [12-16] and expect
-   mmap2 offset to be provided in based on the configured pagesize.
-   Determine the shift dynamically with getpagesize.  */
+/* OpenRISC Linux sets the page shift to 13 and mmap2 expects
+   offsets to be provided in 8K pages.  Set MMAP2_PAGE_UNIT to -1
+   to allow mmap_internal.h to determine the page size dynamically with
+   getpagesize.  */
 #define MMAP2_PAGE_UNIT -1
 
 #include_next <mmap_internal.h>
