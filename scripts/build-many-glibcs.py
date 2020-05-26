@@ -331,6 +331,8 @@ class Context(object):
                                  'ccopts': '-mabi=64'}])
         self.add_config(arch='nios2',
                         os_name='linux-gnu')
+        self.add_config(arch='or1k',
+                        os_name='linux-gnu')
         self.add_config(arch='powerpc',
                         os_name='linux-gnu',
                         gcc_cfg=['--disable-multilib', '--enable-secureplt'],
@@ -1255,6 +1257,7 @@ def install_linux_headers(policy, cmdlist):
                 'microblaze': 'microblaze',
                 'mips': 'mips',
                 'nios2': 'nios2',
+                'or1k': 'openrisc',
                 'powerpc': 'powerpc',
                 's390': 's390',
                 'riscv32': 'riscv',
