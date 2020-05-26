@@ -118,6 +118,8 @@ Major new features:
   The latest GCC available at this time (10.2) does not support this level of
   fortification.
 
+* Support for OpenRISC on Linux has been added.
+
 Deprecated and removed features, and other changes affecting compatibility:
 
 * The mallinfo function is marked deprecated.  Callers should call
