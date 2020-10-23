@@ -29,8 +29,10 @@ typedef unsigned long int elf_greg_t;
 
 /* And the array of general-purpose registers.  We could have used `struct
    user_regs' directly, but tradition says that the register set is an array,
-   which does have some peculiar semantics, so leave it that way.  */
-typedef elf_greg_t elf_gregset_t[ELF_NGREG];
+   which does have some peculiar semantics, so leave it that way.
+   GDB uses this for prtrace GETREGSET, on OpenRISC the regset contains 32
+   gprs the PC and the SR, 34 longs.  */
+typedef elf_greg_t elf_gregset_t[34];
 
 /* Register set for the floating-point registers.  */
-typedef elf_gregset_t elf_fpregset_t;
+typedef elf_greg_t elf_fpregset_t[32];
