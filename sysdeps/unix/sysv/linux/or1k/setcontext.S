@@ -22,7 +22,7 @@
 /* int setcontext (const ucontext_t *ucp) */
 	.text
 ENTRY(__setcontext)
-	l.ori	r12, r3, 0
+	l.ori	r30, r3, 0
 
 	/* Restore signal mask.  */
 	/* rt_sigprocmask (SIG_SETMASK, &ucp->uc_sigmask, NULL, _NSIG8) */
@@ -41,29 +41,29 @@ ENTRY(__setcontext)
 	 l.nop
 
 	/* Restore argument registers, for the makecontext() case.  */
-	l.lwz	r3, (UCONTEXT_MCONTEXT +  3*4)(r12)
-	l.lwz	r4, (UCONTEXT_MCONTEXT +  4*4)(r12)
-	l.lwz	r5, (UCONTEXT_MCONTEXT +  5*4)(r12)
-	l.lwz	r6, (UCONTEXT_MCONTEXT +  6*4)(r12)
-	l.lwz	r7, (UCONTEXT_MCONTEXT +  7*4)(r12)
-	l.lwz	r8, (UCONTEXT_MCONTEXT +  8*4)(r12)
+	l.lwz	r3, (UCONTEXT_MCONTEXT +  3*4)(r30)
+	l.lwz	r4, (UCONTEXT_MCONTEXT +  4*4)(r30)
+	l.lwz	r5, (UCONTEXT_MCONTEXT +  5*4)(r30)
+	l.lwz	r6, (UCONTEXT_MCONTEXT +  6*4)(r30)
+	l.lwz	r7, (UCONTEXT_MCONTEXT +  7*4)(r30)
+	l.lwz	r8, (UCONTEXT_MCONTEXT +  8*4)(r30)
 
 	/* Restore registers stored in getcontext().  */
-	l.lwz	r1,  (UCONTEXT_MCONTEXT +  1*4)(r12)
-	l.lwz	r2,  (UCONTEXT_MCONTEXT +  2*4)(r12)
-	l.lwz	r9,  (UCONTEXT_MCONTEXT +  9*4)(r12)
-	l.lwz	r10, (UCONTEXT_MCONTEXT + 10*4)(r12)
-	l.lwz	r11, (UCONTEXT_MCONTEXT + 11*4)(r12)
+	l.lwz	r1,  (UCONTEXT_MCONTEXT +  1*4)(r30)
+	l.lwz	r2,  (UCONTEXT_MCONTEXT +  2*4)(r30)
+	l.lwz	r9,  (UCONTEXT_MCONTEXT +  9*4)(r30)
+	l.lwz	r10, (UCONTEXT_MCONTEXT + 10*4)(r30)
+	l.lwz	r11, (UCONTEXT_MCONTEXT + 11*4)(r30)
 	/* Restore r14-r30 even, callee saved registers.  */
-	l.lwz	r14, (UCONTEXT_MCONTEXT + 14*4)(r12)
-	l.lwz	r16, (UCONTEXT_MCONTEXT + 16*4)(r12)
-	l.lwz	r18, (UCONTEXT_MCONTEXT + 18*4)(r12)
-	l.lwz	r20, (UCONTEXT_MCONTEXT + 20*4)(r12)
-	l.lwz	r22, (UCONTEXT_MCONTEXT + 22*4)(r12)
-	l.lwz	r24, (UCONTEXT_MCONTEXT + 24*4)(r12)
-	l.lwz	r26, (UCONTEXT_MCONTEXT + 26*4)(r12)
-	l.lwz	r28, (UCONTEXT_MCONTEXT + 28*4)(r12)
-	l.lwz	r30, (UCONTEXT_MCONTEXT + 30*4)(r12)
+	l.lwz	r14, (UCONTEXT_MCONTEXT + 14*4)(r30)
+	l.lwz	r16, (UCONTEXT_MCONTEXT + 16*4)(r30)
+	l.lwz	r18, (UCONTEXT_MCONTEXT + 18*4)(r30)
+	l.lwz	r20, (UCONTEXT_MCONTEXT + 20*4)(r30)
+	l.lwz	r22, (UCONTEXT_MCONTEXT + 22*4)(r30)
+	l.lwz	r24, (UCONTEXT_MCONTEXT + 24*4)(r30)
+	l.lwz	r26, (UCONTEXT_MCONTEXT + 26*4)(r30)
+	l.lwz	r28, (UCONTEXT_MCONTEXT + 28*4)(r30)
+	l.lwz	r30, (UCONTEXT_MCONTEXT + 30*4)(r30)
 
 	l.jr	r11
  	 l.ori	r11, r0, 0
