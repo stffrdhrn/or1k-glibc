@@ -148,7 +148,7 @@ register tcbhead_t *__thread_self __asm__("r10");
 /* Magic for libthread_db to know how to do THREAD_SELF.  */
 
 # define DB_THREAD_SELF \
-  CONST_THREAD_AREA (32, sizeof (struct pthread))
+  REGISTER (32, 32, 10 * 4, - TLS_INIT_TCB_SIZE - TLS_PRE_TCB_SIZE)
 
 /* Access to data in the thread descriptor is easy.  */
 
