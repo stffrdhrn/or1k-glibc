@@ -60,42 +60,15 @@ ENTRY(__or1k_clone)
 	l.bf	L(error)
 	 l.nop
 
-	/* If we are not the child, return the pidi.  */
+	/* If we are not the child, return the pid.  */
 	l.sfeqi	r11, 0
-	l.bf	L(child)
+	l.bf	L(thread_start)
 	 l.nop
 
 	l.jr	r9
 	 l.nop
 
-L(child):
-	/* Load flags.  */
-	l.lwz	r3, 0(r1)
-
-	/* Update PID, but only if we do not share the same PID
-	   as our parent.  */
-	l.srli 	r4, r3, 16
-	l.andi	r4, r4, hi(CLONE_THREAD)
-	l.sfnei	r4, 0
-	l.bf	L(oldpid)
-	 l.nop
-
-	/* If we share the same memory space, reset the PID/TID values.
-	   Apparently getpid caches, so we want to make sure it's flushed.  */
-	l.ori	r11, r0, -1
-	l.andi	r4, r3, CLONE_VM
-	l.sfnei	r4, 0
-	l.bf	L(setpid)
-	 l.nop
-
-	/* Else we update them.  */
-	DO_CALL (getpid)
-
-L(setpid):
-	l.addi	r3, r10, TP_TO_PTHREAD_OFFSET
-	l.sw	TID_OFFSET(r3), r11
-
-L(oldpid):
+L(thread_start):
 	/* Load function from stack.  */
 	l.lwz	r11, 8(r1)
 	l.jalr	r11
@@ -107,6 +80,6 @@ L(oldpid):
 
 L(error):
 	l.j	SYSCALL_ERROR_NAME
-	 l.ori	r3,r11,0
+	 l.ori	r3, r11, 0
 
 PSEUDO_END (__or1k_clone)
