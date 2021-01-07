@@ -17,7 +17,7 @@
 
 #include <sysdeps/or1k/sysdep.h>
 #include <sysdeps/unix/sysv/linux/generic/sysdep.h>
-#include <sys/syscall.h>
+#include <tls.h>
 
 /* "workarounds" for generic code needing to handle 64-bit time_t.  */
 

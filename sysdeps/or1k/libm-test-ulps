@@ -48,7 +48,7 @@ double: 1
 float: 1
 
 Function: "asinh":
-double: 1
+double: 2
 float: 2
 
 Function: "asinh_downward":
@@ -329,7 +329,7 @@ double: 2
 float: 1
 
 Function: "cbrt":
-double: 3
+double: 4
 float: 1
 
 Function: "cbrt_downward":
@@ -377,7 +377,7 @@ double: 2
 float: 2
 
 Function: Real part of "ccosh":
-double: 1
+double: 2
 float: 1
 
 Function: Imaginary part of "ccosh":
@@ -520,7 +520,7 @@ double: 4
 float: 1
 
 Function: "cosh":
-double: 1
+double: 2
 float: 2
 
 Function: "cosh_downward":
@@ -738,7 +738,7 @@ double: 1
 float: 1
 
 Function: "erfc":
-double: 3
+double: 5
 float: 3
 
 Function: "erfc_downward":
@@ -754,6 +754,7 @@ double: 5
 float: 6
 
 Function: "exp":
+double: 1
 float: 1
 
 Function: "exp10":
@@ -1041,7 +1042,7 @@ double: 3
 float: 3
 
 Function: "tgamma":
-double: 5
+double: 9
 float: 8
 
 Function: "tgamma_downward":
