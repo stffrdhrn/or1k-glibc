@@ -951,6 +951,8 @@ reopen (res_state statp, int *terrno, int ns)
 		struct sockaddr *nsap = get_nsaddr (statp, ns);
 		socklen_t slen;
 
+		slen = 0;
+
 		/* only try IPv6 if IPv6 NS and if not failed before */
 		if (nsap->sa_family == AF_INET6 && !statp->ipv6_unavail) {
 			EXT(statp).nssocks[ns] = socket
