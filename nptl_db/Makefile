@@ -53,6 +53,11 @@ libthread_db.so-no-z-defs = yes
 
 tests-special += $(objpfx)db-symbols.out
 
+CFLAGS-td_thr_set_event.c += -Wno-error=maybe-uninitialized
+CFLAGS-td_thr_clear_event.c += -Wno-error=maybe-uninitialized
+CFLAGS-td_thr_event_getmsg.c += -Wno-error=maybe-uninitialized
+CFLAGS-td_ta_event_getmsg.c += -Wno-error=maybe-uninitialized
+
 include ../Rules
 
 $(objpfx)db-symbols.out: $(objpfx)db-symbols.v.i \
