@@ -191,6 +191,7 @@ include ../Rules
 
 CFLAGS-mcheck-init.c += $(PIC-ccflag)
 CFLAGS-obstack.c += $(uses-callbacks)
+# CFLAGS-malloc.c += Wno-error=maybe-uninitialize
 
 $(objpfx)libmcheck.a: $(objpfx)mcheck-init.o
 	-rm -f $@

@@ -1350,8 +1350,10 @@ nextchunk-> +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 static inline bool
 checked_request2size (size_t req, size_t *sz) __nonnull (1)
 {
-  if (__glibc_unlikely (req > PTRDIFF_MAX))
+  if (__glibc_unlikely (req > PTRDIFF_MAX)) {
+    *sz = 0;
     return false;
+  }
 
   /* When using tagged memory, we cannot share the end of the user
      block with the header for the next chunk, so ensure that we
@@ -3749,7 +3751,7 @@ __libc_calloc (size_t n, size_t elem_size)
 static void *
 _int_malloc (mstate av, size_t bytes)
 {
-  INTERNAL_SIZE_T nb;               /* normalized request size */
+  INTERNAL_SIZE_T nb = 0;           /* normalized request size */
   unsigned int idx;                 /* associated bin index */
   mbinptr bin;                      /* associated bin */
 
