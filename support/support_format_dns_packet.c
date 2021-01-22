@@ -115,6 +115,9 @@ support_format_dns_packet (const unsigned char *buffer, size_t length)
   unsigned short ancount;
   unsigned short nscount;
   unsigned short adcount;
+
+  ancount = 0;
+
   if (!(extract_16 (&in, &txnid)
         && extract_16 (&in, &flags)
         && extract_16 (&in, &qdcount)
@@ -138,6 +141,9 @@ support_format_dns_packet (const unsigned char *buffer, size_t length)
     }
   unsigned short qtype;
   unsigned short qclass;
+
+  qtype = 0;
+  qclass = 0;
   if (!(extract_16 (&in, &qtype)
         && extract_16 (&in, &qclass)))
     {
@@ -165,6 +171,9 @@ support_format_dns_packet (const unsigned char *buffer, size_t length)
       unsigned ttl;
       unsigned short rdlen;
       struct in_buffer rdata;
+
+      rtype = 0;
+      rdlen = 0;
       if (!(extract_16 (&in, &rtype)
             && extract_16 (&in, &rclass)
             && extract_32 (&in, &ttl)
