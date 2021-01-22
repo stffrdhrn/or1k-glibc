@@ -30,7 +30,7 @@ DIAG_PUSH_NEEDS_COMMENT;
    PTRDIFF_MAX; the use of SIZE_MAX is deliberate here.  */
 DIAG_IGNORE_NEEDS_COMMENT (8, "-Wstringop-overflow=");
 #endif
-#if __GNUC_PREREQ (11, 0)
+#if __GNUC_PREREQ (10, 0)
 /* Likewise GCC 11, with a different warning option.  */
 DIAG_IGNORE_NEEDS_COMMENT (11, "-Wstringop-overread");
 #endif
