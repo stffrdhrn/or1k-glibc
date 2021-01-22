@@ -279,6 +279,7 @@ CFLAGS-execvp.os = -fomit-frame-pointer
 CFLAGS-execlp.os = -fomit-frame-pointer
 CFLAGS-nanosleep.c += -fexceptions -fasynchronous-unwind-tables
 CFLAGS-fork.c = $(libio-mtsafe)
+CFLAGS-regex.c += -Wno-error=maybe-uninitialized
 
 tstgetopt-ARGS = -a -b -cfoobar --required foobar --optional=bazbug \
 		--none random --col --color --colour
