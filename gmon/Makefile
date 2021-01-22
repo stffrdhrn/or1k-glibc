@@ -46,7 +46,7 @@ endif
 endif
 
 # The mcount code won't work without a frame pointer.
-CFLAGS-mcount.c := -fno-omit-frame-pointer
+CFLAGS-mcount.c := -fno-omit-frame-pointer -Wno-error=frame-address
 
 CFLAGS-tst-gmon.c := -fno-omit-frame-pointer -pg
 tst-gmon-no-pie = yes
