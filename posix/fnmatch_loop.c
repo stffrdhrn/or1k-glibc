@@ -494,6 +494,10 @@ FCT (const CHAR *pattern, const CHAR *string, const CHAR *string_end,
                             extra = (const unsigned char *)
                               _NL_CURRENT (LC_COLLATE,
                                            _NL_COLLATE_SYMB_EXTRAMB);
+                            idx = 0;
+# if WIDE_CHAR_VERSION
+                            wextra = (CHAR *) extra;
+# endif
 
                             for (elem = 0; elem < table_size; elem++)
                               if (symb_table[2 * elem] != 0)
@@ -683,6 +687,10 @@ FCT (const CHAR *pattern, const CHAR *string, const CHAR *string_end,
                                 extra = (const unsigned char *)
                                   _NL_CURRENT (LC_COLLATE,
                                                _NL_COLLATE_SYMB_EXTRAMB);
+                                idx = 0;
+# if WIDE_CHAR_VERSION
+                                wextra = (CHAR *) extra;
+# endif
 
                                 for (elem = 0; elem < table_size; elem++)
                                   if (symb_table[2 * elem] != 0)
