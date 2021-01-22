@@ -108,6 +108,7 @@ __log1p (double x)
   GET_HIGH_WORD (hx, x);
   ax = hx & 0x7fffffff;
 
+  c = 0;
   k = 1;
   if (hx < 0x3FDA827A)                          /* x < 0.41422  */
     {

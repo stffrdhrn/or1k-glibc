@@ -43,6 +43,7 @@ __log1pf(float x)
 	GET_FLOAT_WORD(hx,x);
 	ax = hx&0x7fffffff;
 
+	c = 0;
 	k = 1;
 	if (hx < 0x3ed413d7) {			/* x < 0.41422  */
 	    if(ax>=0x3f800000) {		/* x <= -1.0 */
