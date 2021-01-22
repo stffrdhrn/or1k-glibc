@@ -47,6 +47,8 @@ have-sunrpc		:= 0
 endif
 CPPFLAGS-getent.c	= -DHAVE_SUNRPC=$(have-sunrpc)
 
+CFLAGS-nss_database.c += -Wno-error=maybe-uninitialized
+
 others                  := getent makedb
 install-bin             := getent makedb
 makedb-modules = xmalloc hash-string
