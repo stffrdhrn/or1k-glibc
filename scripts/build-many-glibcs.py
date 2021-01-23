@@ -332,7 +332,12 @@ class Context(object):
         self.add_config(arch='nios2',
                         os_name='linux-gnu')
         self.add_config(arch='or1k',
-                        os_name='linux-gnu')
+                        os_name='linux-gnu',
+                        gcc_cfg=['--with-multilib-list=mcmov',' -mhard-float'])
+        self.add_config(arch='or1k',
+                        os_name='linux-gnu',
+                        variant='soft',
+                        gcc_cfg=['--with-multilib-list=mcmov'])
         self.add_config(arch='powerpc',
                         os_name='linux-gnu',
                         gcc_cfg=['--disable-multilib', '--enable-secureplt'],
