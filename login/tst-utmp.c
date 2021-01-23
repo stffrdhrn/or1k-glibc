@@ -34,6 +34,7 @@
 # define getutline getutxline
 # define getutid getutxid
 # define pututline pututxline
+# define UT_LINESIZE __UT_LINESIZE
 #else
 # include <utmp.h>
 #endif
@@ -154,7 +155,7 @@ simulate_login (const char *line, const char *user)
 
   for (n = 0; n < num_entries; n++)
     {
-      if (strcmp (line, entry[n].ut_line) == 0
+      if (strncmp (line, entry[n].ut_line, UT_LINESIZE) == 0
 	  || entry[n].ut_type == DEAD_PROCESS)
 	{
 	  if (entry[n].ut_pid == DEAD_PROCESS)
@@ -187,7 +188,7 @@ simulate_logout (const char *line)
 
   for (n = 0; n < num_entries; n++)
     {
-      if (strcmp (line, entry[n].ut_line) == 0)
+      if (strncmp (line, entry[n].ut_line, UT_LINESIZE) == 0)
 	{
 	  entry[n].ut_type = DEAD_PROCESS;
 	  strncpy (entry[n].ut_user, "", sizeof (entry[n].ut_user));
@@ -231,7 +232,7 @@ check_login (const char *line)
 
   for (n = 0; n < num_entries; n++)
     {
-      if (strcmp (line, entry[n].ut_line) == 0)
+      if (strncmp (line, entry[n].ut_line, UT_LINESIZE) == 0)
 	{
 	  if (memcmp (up, &entry[n], sizeof (struct utmp)))
 	    {
@@ -288,7 +289,7 @@ check_id (const char *id)
 
   for (n = 0; n < num_entries; n++)
     {
-      if (strcmp (id, entry[n].ut_id) == 0)
+      if (strncmp (id, entry[n].ut_id, 4) == 0)
 	{
 	  if (memcmp (up, &entry[n], sizeof (struct utmp)))
 	    {
