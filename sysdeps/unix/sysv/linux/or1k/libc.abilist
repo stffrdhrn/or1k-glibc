@@ -1,7 +1,7 @@
 GLIBC_2.32 _Exit F
-GLIBC_2.32 _IO_2_1_stderr_ D 0x98
-GLIBC_2.32 _IO_2_1_stdin_ D 0x98
-GLIBC_2.32 _IO_2_1_stdout_ D 0x98
+GLIBC_2.32 _IO_2_1_stderr_ D 0x9c
+GLIBC_2.32 _IO_2_1_stdin_ D 0x9c
+GLIBC_2.32 _IO_2_1_stdout_ D 0x9c
 GLIBC_2.32 _IO_adjust_column F
 GLIBC_2.32 _IO_adjust_wcolumn F
 GLIBC_2.32 _IO_default_doallocate F
@@ -128,7 +128,6 @@ GLIBC_2.32 _IO_wfile_underflow F
 GLIBC_2.32 _IO_wfile_xsputn F
 GLIBC_2.32 _IO_wmarker_delta F
 GLIBC_2.32 _IO_wsetb F
-GLIBC_2.32 ___brk_addr D 0x4
 GLIBC_2.32 __adjtimex F
 GLIBC_2.32 __after_morecore_hook D 0x4
 GLIBC_2.32 __argz_count F
@@ -265,9 +264,6 @@ GLIBC_2.32 __iswupper_l F
 GLIBC_2.32 __iswxdigit_l F
 GLIBC_2.32 __isxdigit_l F
 GLIBC_2.32 __ivaliduser F
-GLIBC_2.32 __key_decryptsession_pk_LOCAL D 0x4
-GLIBC_2.32 __key_encryptsession_pk_LOCAL D 0x4
-GLIBC_2.32 __key_gendes_LOCAL D 0x4
 GLIBC_2.32 __libc_allocate_rtsig F
 GLIBC_2.32 __libc_calloc F
 GLIBC_2.32 __libc_current_sigrtmax F
@@ -282,6 +278,7 @@ GLIBC_2.32 __libc_memalign F
 GLIBC_2.32 __libc_pvalloc F
 GLIBC_2.32 __libc_realloc F
 GLIBC_2.32 __libc_sa_len F
+GLIBC_2.32 __libc_single_threaded D 0x1
 GLIBC_2.32 __libc_start_main F
 GLIBC_2.32 __libc_valloc F
 GLIBC_2.32 __longjmp_chk F
@@ -347,10 +344,6 @@ GLIBC_2.32 __res_nclose F
 GLIBC_2.32 __res_ninit F
 GLIBC_2.32 __res_randomid F
 GLIBC_2.32 __res_state F
-GLIBC_2.32 __rpc_thread_createerr F
-GLIBC_2.32 __rpc_thread_svc_fdset F
-GLIBC_2.32 __rpc_thread_svc_max_pollfd F
-GLIBC_2.32 __rpc_thread_svc_pollfd F
 GLIBC_2.32 __sbrk F
 GLIBC_2.32 __sched_cpualloc F
 GLIBC_2.32 __sched_cpucount F
@@ -492,7 +485,6 @@ GLIBC_2.32 __xpg_sigpause F
 GLIBC_2.32 __xpg_strerror_r F
 GLIBC_2.32 __xstat F
 GLIBC_2.32 __xstat64 F
-GLIBC_2.32 _authenticate F
 GLIBC_2.32 _dl_mcount_wrapper F
 GLIBC_2.32 _dl_mcount_wrapper_check F
 GLIBC_2.32 _environ D 0x4
@@ -505,7 +497,6 @@ GLIBC_2.32 _mcount F
 GLIBC_2.32 _nl_default_dirname D 0x12
 GLIBC_2.32 _nl_domain_bindings D 0x4
 GLIBC_2.32 _nl_msg_cat_cntr D 0x4
-GLIBC_2.32 _null_auth D 0xc
 GLIBC_2.32 _obstack_allocated_p F
 GLIBC_2.32 _obstack_begin F
 GLIBC_2.32 _obstack_begin_1 F
@@ -514,12 +505,7 @@ GLIBC_2.32 _obstack_memory_used F
 GLIBC_2.32 _obstack_newchunk F
 GLIBC_2.32 _res D 0x200
 GLIBC_2.32 _res_hconf D 0x30
-GLIBC_2.32 _rpc_dtablesize F
-GLIBC_2.32 _seterr_reply F
 GLIBC_2.32 _setjmp F
-GLIBC_2.32 _sys_errlist D 0x21c
-GLIBC_2.32 _sys_nerr D 0x4
-GLIBC_2.32 _sys_siglist D 0x104
 GLIBC_2.32 _tolower F
 GLIBC_2.32 _toupper F
 GLIBC_2.32 a64l F
@@ -566,12 +552,6 @@ GLIBC_2.32 atof F
 GLIBC_2.32 atoi F
 GLIBC_2.32 atol F
 GLIBC_2.32 atoll F
-GLIBC_2.32 authdes_create F
-GLIBC_2.32 authdes_getucred F
-GLIBC_2.32 authdes_pk_create F
-GLIBC_2.32 authnone_create F
-GLIBC_2.32 authunix_create F
-GLIBC_2.32 authunix_create_default F
 GLIBC_2.32 backtrace F
 GLIBC_2.32 backtrace_symbols F
 GLIBC_2.32 backtrace_symbols_fd F
@@ -590,14 +570,12 @@ GLIBC_2.32 bzero F
 GLIBC_2.32 c16rtomb F
 GLIBC_2.32 c32rtomb F
 GLIBC_2.32 calloc F
-GLIBC_2.32 callrpc F
 GLIBC_2.32 canonicalize_file_name F
 GLIBC_2.32 capget F
 GLIBC_2.32 capset F
 GLIBC_2.32 catclose F
 GLIBC_2.32 catgets F
 GLIBC_2.32 catopen F
-GLIBC_2.32 cbc_crypt F
 GLIBC_2.32 cfgetispeed F
 GLIBC_2.32 cfgetospeed F
 GLIBC_2.32 cfmakeraw F
@@ -612,19 +590,6 @@ GLIBC_2.32 chroot F
 GLIBC_2.32 clearenv F
 GLIBC_2.32 clearerr F
 GLIBC_2.32 clearerr_unlocked F
-GLIBC_2.32 clnt_broadcast F
-GLIBC_2.32 clnt_create F
-GLIBC_2.32 clnt_pcreateerror F
-GLIBC_2.32 clnt_perrno F
-GLIBC_2.32 clnt_perror F
-GLIBC_2.32 clnt_spcreateerror F
-GLIBC_2.32 clnt_sperrno F
-GLIBC_2.32 clnt_sperror F
-GLIBC_2.32 clntraw_create F
-GLIBC_2.32 clnttcp_create F
-GLIBC_2.32 clntudp_bufcreate F
-GLIBC_2.32 clntudp_create F
-GLIBC_2.32 clntunix_create F
 GLIBC_2.32 clock F
 GLIBC_2.32 clock_adjtime F
 GLIBC_2.32 clock_getcpuclockid F
@@ -653,7 +618,6 @@ GLIBC_2.32 daylight D 0x4
 GLIBC_2.32 dcgettext F
 GLIBC_2.32 dcngettext F
 GLIBC_2.32 delete_module F
-GLIBC_2.32 des_setparity F
 GLIBC_2.32 dgettext F
 GLIBC_2.32 difftime F
 GLIBC_2.32 dirfd F
@@ -670,7 +634,6 @@ GLIBC_2.32 dup3 F
 GLIBC_2.32 duplocale F
 GLIBC_2.32 dysize F
 GLIBC_2.32 eaccess F
-GLIBC_2.32 ecb_crypt F
 GLIBC_2.32 ecvt F
 GLIBC_2.32 ecvt_r F
 GLIBC_2.32 endaliasent F
@@ -862,7 +825,6 @@ GLIBC_2.32 gai_strerror F
 GLIBC_2.32 gcvt F
 GLIBC_2.32 get_avphys_pages F
 GLIBC_2.32 get_current_dir_name F
-GLIBC_2.32 get_myaddress F
 GLIBC_2.32 get_nprocs F
 GLIBC_2.32 get_nprocs_conf F
 GLIBC_2.32 get_phys_pages F
@@ -932,7 +894,6 @@ GLIBC_2.32 getnetent F
 GLIBC_2.32 getnetent_r F
 GLIBC_2.32 getnetgrent F
 GLIBC_2.32 getnetgrent_r F
-GLIBC_2.32 getnetname F
 GLIBC_2.32 getopt F
 GLIBC_2.32 getopt_long F
 GLIBC_2.32 getopt_long_only F
@@ -951,7 +912,6 @@ GLIBC_2.32 getprotobynumber_r F
 GLIBC_2.32 getprotoent F
 GLIBC_2.32 getprotoent_r F
 GLIBC_2.32 getpt F
-GLIBC_2.32 getpublickey F
 GLIBC_2.32 getpw F
 GLIBC_2.32 getpwent F
 GLIBC_2.32 getpwent_r F
@@ -970,10 +930,8 @@ GLIBC_2.32 getrpcbynumber F
 GLIBC_2.32 getrpcbynumber_r F
 GLIBC_2.32 getrpcent F
 GLIBC_2.32 getrpcent_r F
-GLIBC_2.32 getrpcport F
 GLIBC_2.32 getrusage F
 GLIBC_2.32 gets F
-GLIBC_2.32 getsecretkey F
 GLIBC_2.32 getservbyname F
 GLIBC_2.32 getservbyname_r F
 GLIBC_2.32 getservbyport F
@@ -1042,7 +1000,6 @@ GLIBC_2.32 hcreate_r F
 GLIBC_2.32 hdestroy F
 GLIBC_2.32 hdestroy_r F
 GLIBC_2.32 herror F
-GLIBC_2.32 host2netname F
 GLIBC_2.32 hsearch F
 GLIBC_2.32 hsearch_r F
 GLIBC_2.32 hstrerror F
@@ -1165,15 +1122,6 @@ GLIBC_2.32 isxdigit F
 GLIBC_2.32 isxdigit_l F
 GLIBC_2.32 jrand48 F
 GLIBC_2.32 jrand48_r F
-GLIBC_2.32 key_decryptsession F
-GLIBC_2.32 key_decryptsession_pk F
-GLIBC_2.32 key_encryptsession F
-GLIBC_2.32 key_encryptsession_pk F
-GLIBC_2.32 key_gendes F
-GLIBC_2.32 key_get_conv F
-GLIBC_2.32 key_secretkey_is_set F
-GLIBC_2.32 key_setnet F
-GLIBC_2.32 key_setsecret F
 GLIBC_2.32 kill F
 GLIBC_2.32 killpg F
 GLIBC_2.32 klogctl F
@@ -1291,8 +1239,6 @@ GLIBC_2.32 munmap F
 GLIBC_2.32 muntrace F
 GLIBC_2.32 name_to_handle_at F
 GLIBC_2.32 nanosleep F
-GLIBC_2.32 netname2host F
-GLIBC_2.32 netname2user F
 GLIBC_2.32 newlocale F
 GLIBC_2.32 nftw F
 GLIBC_2.32 nftw64 F
@@ -1327,7 +1273,6 @@ GLIBC_2.32 opterr D 0x4
 GLIBC_2.32 optind D 0x4
 GLIBC_2.32 optopt D 0x4
 GLIBC_2.32 parse_printf_format F
-GLIBC_2.32 passwd2des F
 GLIBC_2.32 pathconf F
 GLIBC_2.32 pause F
 GLIBC_2.32 pclose F
@@ -1341,11 +1286,6 @@ GLIBC_2.32 pkey_free F
 GLIBC_2.32 pkey_get F
 GLIBC_2.32 pkey_mprotect F
 GLIBC_2.32 pkey_set F
-GLIBC_2.32 pmap_getmaps F
-GLIBC_2.32 pmap_getport F
-GLIBC_2.32 pmap_rmtcall F
-GLIBC_2.32 pmap_set F
-GLIBC_2.32 pmap_unset F
 GLIBC_2.32 poll F
 GLIBC_2.32 popen F
 GLIBC_2.32 posix_fadvise F
@@ -1405,12 +1345,15 @@ GLIBC_2.32 pthread_attr_getinheritsched F
 GLIBC_2.32 pthread_attr_getschedparam F
 GLIBC_2.32 pthread_attr_getschedpolicy F
 GLIBC_2.32 pthread_attr_getscope F
+GLIBC_2.32 pthread_attr_getsigmask_np F
 GLIBC_2.32 pthread_attr_init F
+GLIBC_2.32 pthread_attr_setaffinity_np F
 GLIBC_2.32 pthread_attr_setdetachstate F
 GLIBC_2.32 pthread_attr_setinheritsched F
 GLIBC_2.32 pthread_attr_setschedparam F
 GLIBC_2.32 pthread_attr_setschedpolicy F
 GLIBC_2.32 pthread_attr_setscope F
+GLIBC_2.32 pthread_attr_setsigmask_np F
 GLIBC_2.32 pthread_cond_broadcast F
 GLIBC_2.32 pthread_cond_destroy F
 GLIBC_2.32 pthread_cond_init F
@@ -1421,6 +1364,8 @@ GLIBC_2.32 pthread_condattr_destroy F
 GLIBC_2.32 pthread_condattr_init F
 GLIBC_2.32 pthread_equal F
 GLIBC_2.32 pthread_exit F
+GLIBC_2.32 pthread_getaffinity_np F
+GLIBC_2.32 pthread_getattr_np F
 GLIBC_2.32 pthread_getschedparam F
 GLIBC_2.32 pthread_mutex_destroy F
 GLIBC_2.32 pthread_mutex_init F
@@ -1511,7 +1456,6 @@ GLIBC_2.32 register_printf_function F
 GLIBC_2.32 register_printf_modifier F
 GLIBC_2.32 register_printf_specifier F
 GLIBC_2.32 register_printf_type F
-GLIBC_2.32 registerrpc F
 GLIBC_2.32 remap_file_pages F
 GLIBC_2.32 remove F
 GLIBC_2.32 removexattr F
@@ -1527,11 +1471,9 @@ GLIBC_2.32 rexec_af F
 GLIBC_2.32 rexecoptions D 0x4
 GLIBC_2.32 rindex F
 GLIBC_2.32 rmdir F
-GLIBC_2.32 rpc_createerr D 0x10
 GLIBC_2.32 rpmatch F
 GLIBC_2.32 rresvport F
 GLIBC_2.32 rresvport_af F
-GLIBC_2.32 rtime F
 GLIBC_2.32 ruserok F
 GLIBC_2.32 ruserok_af F
 GLIBC_2.32 ruserpass F
@@ -1635,12 +1577,14 @@ GLIBC_2.32 shmctl F
 GLIBC_2.32 shmdt F
 GLIBC_2.32 shmget F
 GLIBC_2.32 shutdown F
+GLIBC_2.32 sigabbrev_np F
 GLIBC_2.32 sigaction F
 GLIBC_2.32 sigaddset F
 GLIBC_2.32 sigaltstack F
 GLIBC_2.32 sigandset F
 GLIBC_2.32 sigblock F
 GLIBC_2.32 sigdelset F
+GLIBC_2.32 sigdescr_np F
 GLIBC_2.32 sigemptyset F
 GLIBC_2.32 sigfillset F
 GLIBC_2.32 siggetmask F
@@ -1681,7 +1625,6 @@ GLIBC_2.32 srandom F
 GLIBC_2.32 srandom_r F
 GLIBC_2.32 sscanf F
 GLIBC_2.32 ssignal F
-GLIBC_2.32 sstk F
 GLIBC_2.32 statfs F
 GLIBC_2.32 statfs64 F
 GLIBC_2.32 statvfs F
@@ -1707,6 +1650,8 @@ GLIBC_2.32 strdup F
 GLIBC_2.32 strerror F
 GLIBC_2.32 strerror_l F
 GLIBC_2.32 strerror_r F
+GLIBC_2.32 strerrordesc_np F
+GLIBC_2.32 strerrorname_np F
 GLIBC_2.32 strfmon F
 GLIBC_2.32 strfmon_l F
 GLIBC_2.32 strfromd F
@@ -1764,34 +1709,6 @@ GLIBC_2.32 strverscmp F
 GLIBC_2.32 strxfrm F
 GLIBC_2.32 strxfrm_l F
 GLIBC_2.32 stty F
-GLIBC_2.32 svc_exit F
-GLIBC_2.32 svc_fdset D 0x80
-GLIBC_2.32 svc_getreq F
-GLIBC_2.32 svc_getreq_common F
-GLIBC_2.32 svc_getreq_poll F
-GLIBC_2.32 svc_getreqset F
-GLIBC_2.32 svc_max_pollfd D 0x4
-GLIBC_2.32 svc_pollfd D 0x4
-GLIBC_2.32 svc_register F
-GLIBC_2.32 svc_run F
-GLIBC_2.32 svc_sendreply F
-GLIBC_2.32 svc_unregister F
-GLIBC_2.32 svcauthdes_stats D 0xc
-GLIBC_2.32 svcerr_auth F
-GLIBC_2.32 svcerr_decode F
-GLIBC_2.32 svcerr_noproc F
-GLIBC_2.32 svcerr_noprog F
-GLIBC_2.32 svcerr_progvers F
-GLIBC_2.32 svcerr_systemerr F
-GLIBC_2.32 svcerr_weakauth F
-GLIBC_2.32 svcfd_create F
-GLIBC_2.32 svcraw_create F
-GLIBC_2.32 svctcp_create F
-GLIBC_2.32 svcudp_bufcreate F
-GLIBC_2.32 svcudp_create F
-GLIBC_2.32 svcudp_enablecache F
-GLIBC_2.32 svcunix_create F
-GLIBC_2.32 svcunixfd_create F
 GLIBC_2.32 swab F
 GLIBC_2.32 swapcontext F
 GLIBC_2.32 swapoff F
@@ -1803,10 +1720,6 @@ GLIBC_2.32 symlinkat F
 GLIBC_2.32 sync F
 GLIBC_2.32 sync_file_range F
 GLIBC_2.32 syncfs F
-GLIBC_2.32 sys_errlist D 0x21c
-GLIBC_2.32 sys_nerr D 0x4
-GLIBC_2.32 sys_sigabbrev D 0x104
-GLIBC_2.32 sys_siglist D 0x104
 GLIBC_2.32 syscall F
 GLIBC_2.32 sysconf F
 GLIBC_2.32 sysinfo F
@@ -1886,7 +1799,6 @@ GLIBC_2.32 unshare F
 GLIBC_2.32 updwtmp F
 GLIBC_2.32 updwtmpx F
 GLIBC_2.32 uselocale F
-GLIBC_2.32 user2netname F
 GLIBC_2.32 usleep F
 GLIBC_2.32 utime F
 GLIBC_2.32 utimensat F
@@ -2006,76 +1918,14 @@ GLIBC_2.32 wprintf F
 GLIBC_2.32 write F
 GLIBC_2.32 writev F
 GLIBC_2.32 wscanf F
-GLIBC_2.32 xdecrypt F
-GLIBC_2.32 xdr_accepted_reply F
-GLIBC_2.32 xdr_array F
-GLIBC_2.32 xdr_authdes_cred F
-GLIBC_2.32 xdr_authdes_verf F
-GLIBC_2.32 xdr_authunix_parms F
-GLIBC_2.32 xdr_bool F
-GLIBC_2.32 xdr_bytes F
-GLIBC_2.32 xdr_callhdr F
-GLIBC_2.32 xdr_callmsg F
-GLIBC_2.32 xdr_char F
-GLIBC_2.32 xdr_cryptkeyarg F
-GLIBC_2.32 xdr_cryptkeyarg2 F
-GLIBC_2.32 xdr_cryptkeyres F
-GLIBC_2.32 xdr_des_block F
-GLIBC_2.32 xdr_double F
-GLIBC_2.32 xdr_enum F
-GLIBC_2.32 xdr_float F
-GLIBC_2.32 xdr_free F
-GLIBC_2.32 xdr_getcredres F
-GLIBC_2.32 xdr_hyper F
-GLIBC_2.32 xdr_int F
-GLIBC_2.32 xdr_int16_t F
-GLIBC_2.32 xdr_int32_t F
-GLIBC_2.32 xdr_int64_t F
-GLIBC_2.32 xdr_int8_t F
-GLIBC_2.32 xdr_key_netstarg F
-GLIBC_2.32 xdr_key_netstres F
-GLIBC_2.32 xdr_keybuf F
-GLIBC_2.32 xdr_keystatus F
-GLIBC_2.32 xdr_long F
-GLIBC_2.32 xdr_longlong_t F
-GLIBC_2.32 xdr_netnamestr F
-GLIBC_2.32 xdr_netobj F
-GLIBC_2.32 xdr_opaque F
-GLIBC_2.32 xdr_opaque_auth F
-GLIBC_2.32 xdr_pmap F
-GLIBC_2.32 xdr_pmaplist F
-GLIBC_2.32 xdr_pointer F
-GLIBC_2.32 xdr_quad_t F
-GLIBC_2.32 xdr_reference F
-GLIBC_2.32 xdr_rejected_reply F
-GLIBC_2.32 xdr_replymsg F
-GLIBC_2.32 xdr_rmtcall_args F
-GLIBC_2.32 xdr_rmtcallres F
-GLIBC_2.32 xdr_short F
-GLIBC_2.32 xdr_sizeof F
-GLIBC_2.32 xdr_string F
-GLIBC_2.32 xdr_u_char F
-GLIBC_2.32 xdr_u_hyper F
-GLIBC_2.32 xdr_u_int F
-GLIBC_2.32 xdr_u_long F
-GLIBC_2.32 xdr_u_longlong_t F
-GLIBC_2.32 xdr_u_quad_t F
-GLIBC_2.32 xdr_u_short F
-GLIBC_2.32 xdr_uint16_t F
-GLIBC_2.32 xdr_uint32_t F
-GLIBC_2.32 xdr_uint64_t F
-GLIBC_2.32 xdr_uint8_t F
-GLIBC_2.32 xdr_union F
-GLIBC_2.32 xdr_unixcred F
-GLIBC_2.32 xdr_vector F
-GLIBC_2.32 xdr_void F
-GLIBC_2.32 xdr_wrapstring F
-GLIBC_2.32 xdrmem_create F
-GLIBC_2.32 xdrrec_create F
-GLIBC_2.32 xdrrec_endofrecord F
-GLIBC_2.32 xdrrec_eof F
-GLIBC_2.32 xdrrec_skiprecord F
-GLIBC_2.32 xdrstdio_create F
-GLIBC_2.32 xencrypt F
-GLIBC_2.32 xprt_register F
-GLIBC_2.32 xprt_unregister F
+GLIBC_2.33 fstat F
+GLIBC_2.33 fstat64 F
+GLIBC_2.33 fstatat F
+GLIBC_2.33 fstatat64 F
+GLIBC_2.33 lstat F
+GLIBC_2.33 lstat64 F
+GLIBC_2.33 mallinfo2 F
+GLIBC_2.33 mknod F
+GLIBC_2.33 mknodat F
+GLIBC_2.33 stat F
+GLIBC_2.33 stat64 F
