@@ -80,7 +80,6 @@ GLIBC_2.32 pthread_attr_getguardsize F
 GLIBC_2.32 pthread_attr_getstack F
 GLIBC_2.32 pthread_attr_getstackaddr F
 GLIBC_2.32 pthread_attr_getstacksize F
-GLIBC_2.32 pthread_attr_setaffinity_np F
 GLIBC_2.32 pthread_attr_setguardsize F
 GLIBC_2.32 pthread_attr_setstack F
 GLIBC_2.32 pthread_attr_setstackaddr F
@@ -106,9 +105,7 @@ GLIBC_2.32 pthread_condattr_setpshared F
 GLIBC_2.32 pthread_create F
 GLIBC_2.32 pthread_detach F
 GLIBC_2.32 pthread_exit F
-GLIBC_2.32 pthread_getaffinity_np F
 GLIBC_2.32 pthread_getattr_default_np F
-GLIBC_2.32 pthread_getattr_np F
 GLIBC_2.32 pthread_getconcurrency F
 GLIBC_2.32 pthread_getcpuclockid F
 GLIBC_2.32 pthread_getname_np F
