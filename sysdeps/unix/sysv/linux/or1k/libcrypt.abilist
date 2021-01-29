@@ -1,2 +1,2 @@
-GLIBC_2.32 crypt F
-GLIBC_2.32 crypt_r F
+GLIBC_2.33 crypt F
+GLIBC_2.33 crypt_r F

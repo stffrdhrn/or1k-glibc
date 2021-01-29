@@ -1,4 +1,4 @@
-GLIBC_2.32 gai_cancel F
-GLIBC_2.32 gai_error F
-GLIBC_2.32 gai_suspend F
-GLIBC_2.32 getaddrinfo_a F
+GLIBC_2.33 gai_cancel F
+GLIBC_2.33 gai_error F
+GLIBC_2.33 gai_suspend F
+GLIBC_2.33 getaddrinfo_a F

@@ -1,2 +1,2 @@
-DEFAULT                 GLIBC_2.32
+DEFAULT                 GLIBC_2.33
 ld=ld-linux-or1k.so.1
