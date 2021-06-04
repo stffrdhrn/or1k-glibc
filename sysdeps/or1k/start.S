@@ -56,21 +56,15 @@ ENTRY (ENTRY_POINT)
 
 	/* Pass in the the main symbol.  */
 	l.lwz	r3, got(main)(r16)
-
-	/* Pass init and fini.  */
-	l.lwz	r6, got(__libc_csu_init)(r16)
-	l.lwz	r7, got(__libc_csu_fini)(r16)
 #else
 	/* Pass in the the main symbol.  */
 	l.movhi r3, hi(main)
 	l.ori	r3, r3, lo(main)
-
-	/* Pass init and fini.  */
-	l.movhi	r6, hi(__libc_csu_init)
-	l.ori	r6, r6, lo(__libc_csu_init)
-	l.movhi	r7, hi(__libc_csu_fini)
-	l.ori	r7, r7, lo(__libc_csu_fini)
 #endif
+	/* Used to be init and fini.  */
+	l.movhi	r6, 0x0
+	l.movhi	r7, 0x0
+
 	/* Push stack limit onto the stack.
 	   This provides the highest stack address to user code (as stack grows
 	   downwards.
