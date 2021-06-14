@@ -93,7 +93,8 @@ do_test (void)
   /* By default, the resolver is not trusted, and the AD bit is
      cleared.  */
 
-  static const unsigned char hand_crafted_query[] =
+  static const unsigned char hand_crafted_query[]
+			     __attribute__ ((aligned)) =
     {
      10, 11,                    /* Transaction ID.  */
      1, 0x20,                   /* Query with RD, AD flags.  */
