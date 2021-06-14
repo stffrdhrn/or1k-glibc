@@ -52,7 +52,7 @@ do_test (void)
 
   for (int b = 0; b <= 255; ++b)
     {
-      unsigned char query[] =
+      unsigned char query[] __attribute__ ((aligned)) =
         {
           b, b,                 /* Transaction ID.  */
           1, 0,                 /* Query with RD flag.  */
