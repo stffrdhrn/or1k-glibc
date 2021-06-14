@@ -42,6 +42,10 @@ ENTRY(__or1k_clone)
 
 	     NB: tls isn't really an argument, it is read from r7 directly.  */
 
+	/* First, align the stack to 4 bytes.  */
+	l.xori	r11, r0, -4
+	l.and	r4, r4, r11
+
 	/* Put 'fn', 'arg' and 'flags' on the child stack.  */
 	l.addi	r4, r4, -12
 	l.sw	8(r4), r3
