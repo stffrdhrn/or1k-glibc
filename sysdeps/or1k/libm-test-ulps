@@ -2,6 +2,7 @@
 
 # Maximal error of functions:
 Function: "acos":
+double: 1
 float: 1
 
 Function: "acos_downward":
@@ -33,6 +34,7 @@ double: 2
 float: 2
 
 Function: "asin":
+double: 1
 float: 1
 
 Function: "asin_downward":
@@ -64,10 +66,11 @@ double: 3
 float: 3
 
 Function: "atan":
+double: 1
 float: 1
 
 Function: "atan2":
-float: 1
+float: 2
 
 Function: "atan2_downward":
 double: 5
@@ -445,6 +448,7 @@ double: 3
 float: 3
 
 Function: Imaginary part of "clog":
+double: 1
 float: 1
 
 Function: Real part of "clog10":
@@ -842,7 +846,7 @@ double: 1
 
 Function: "j0":
 double: 2
-float: 8
+float: 9
 
 Function: "j0_downward":
 double: 2
@@ -857,7 +861,7 @@ double: 4
 float: 5
 
 Function: "j1":
-double: 2
+double: 4
 float: 9
 
 Function: "j1_downward":
@@ -1059,7 +1063,7 @@ float: 8
 
 Function: "y0":
 double: 3
-float: 8
+float: 9
 
 Function: "y0_downward":
 double: 3
@@ -1075,7 +1079,7 @@ float: 6
 
 Function: "y1":
 double: 3
-float: 2
+float: 9
 
 Function: "y1_downward":
 double: 6
