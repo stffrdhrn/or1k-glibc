@@ -25,7 +25,7 @@
 
 struct timex
 {
-# ifdef __USE_TIME_BITS64
+# ifdef _BITS_TIMEX_H
   unsigned int modes;          /* mode selector */
   int :32;                     /* pad */
   long long offset;            /* time offset (usec) */
