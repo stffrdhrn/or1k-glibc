@@ -107,4 +107,4 @@ do {								\
 } while (0)
 #endif
 
-#define _FP_TININESS_AFTER_ROUNDING 1
+#define _FP_TININESS_AFTER_ROUNDING 0
