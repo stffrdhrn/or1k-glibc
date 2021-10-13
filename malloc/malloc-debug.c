@@ -24,7 +24,6 @@
 #include <unistd.h>
 #include <sys/param.h>
 
-#if SHLIB_COMPAT (libc_malloc_debug, GLIBC_2_0, GLIBC_2_34)
 /* Support only the glibc allocators.  */
 extern void *__libc_malloc (size_t);
 extern void __libc_free (void *);
@@ -640,6 +639,7 @@ compat_symbol (libc_malloc_debug, malloc_set_state, malloc_set_state,
 	       GLIBC_2_0);
 #endif
 
+#if SHLIB_COMPAT (libc_malloc_debug, GLIBC_2_0, GLIBC_2_34)
 /* Do not allow linking against the library.  */
 compat_symbol (libc_malloc_debug, aligned_alloc, aligned_alloc, GLIBC_2_16);
 compat_symbol (libc_malloc_debug, calloc, calloc, GLIBC_2_0);
