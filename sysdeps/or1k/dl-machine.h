@@ -25,9 +25,8 @@
 #include <sys/param.h>
 #include <tls.h>
 #include <dl-irel.h>
-
-/* All relocs are Rela, no Rel */
-#define ELF_MACHINE_NO_REL 1
+#include <dl-static-tls.h>
+#include <dl-machine-rel.h>
 
 /* Return nonzero iff ELF header is compatible with the running host.  */
 static inline int __attribute__ ((unused))
@@ -102,16 +101,14 @@ elf_machine_load_address (void)
 /* A reloc type used for ld.so cmdline arg lookups to reject PLT entries.  */
 #define ELF_MACHINE_JMP_SLOT    R_OR1K_JMP_SLOT
 
-#define ELF_MACHINE_NO_REL 1
-#define ELF_MACHINE_NO_RELA 0
-
 #define ARCH_LA_PLTENTER or1k_gnu_pltenter
 #define ARCH_LA_PLTEXIT or1k_gnu_pltexit
 
 /* Set up the loaded object described by L so its unrelocated PLT
    entries will jump to the on-demand fixup code in dl-runtime.c.  */
 static inline int __attribute__ ((unused, always_inline))
-elf_machine_runtime_setup (struct link_map *l, int lazy, int profile)
+elf_machine_runtime_setup (struct link_map *l, struct r_scope_elem *scope[],
+			   int lazy, int profile)
 {
   ElfW(Addr) *pltgot;
   extern void _dl_runtime_resolve (ElfW(Word));
@@ -201,10 +198,11 @@ elf_machine_plt_value (struct link_map *map, const Elf32_Rela *reloc,
 /* Perform the relocation specified by RELOC and SYM (which is fully resolved).
    MAP is the object containing the reloc.  */
 
-auto inline void
+static inline void
 __attribute ((always_inline))
-elf_machine_rela (struct link_map *map, const Elf32_Rela *reloc,
-                  const Elf32_Sym *sym, const struct r_found_version *version,
+elf_machine_rela (struct link_map *map, struct r_scope_elem *scope[],
+		  const ElfW(Rela) *reloc, const ElfW(Sym) *sym,
+		  const struct r_found_version *version,
                   void *const reloc_addr_arg, int skip_ifunc)
 {
   Elf32_Addr *const reloc_addr = reloc_addr_arg;
@@ -217,7 +215,8 @@ elf_machine_rela (struct link_map *map, const Elf32_Rela *reloc,
 # ifndef RESOLVE_CONFLICT_FIND_MAP
       const Elf32_Sym *const refsym = sym;
 # endif
-      struct link_map *sym_map = RESOLVE_MAP (&sym, version, r_type);
+      struct link_map *sym_map = RESOLVE_MAP (map, scope, &sym, version,
+					      r_type);
       Elf32_Addr value = SYMBOL_ADDRESS (sym_map, sym, true);
 
       if (sym != NULL
@@ -249,7 +248,7 @@ elf_machine_rela (struct link_map *map, const Elf32_Rela *reloc,
             memcpy (reloc_addr_arg, (void *) value,
                 MIN (sym->st_size, refsym->st_size));
             break;
-#endif
+# endif /* !RESOLVE_CONFLICT_FIND_MAP */
           case R_OR1K_32:
 	    /* Support relocations on mis-aligned offsets.  */
 	    value += reloc->r_addend;
@@ -295,7 +294,7 @@ elf_machine_rela (struct link_map *map, const Elf32_Rela *reloc,
     }
 }
 
-auto inline void
+static inline void
 __attribute__ ((always_inline))
 elf_machine_rela_relative (Elf32_Addr l_addr, const Elf32_Rela *reloc,
                            void *const reloc_addr_arg)
@@ -304,11 +303,11 @@ elf_machine_rela_relative (Elf32_Addr l_addr, const Elf32_Rela *reloc,
   *reloc_addr = l_addr + reloc->r_addend;
 }
 
-auto inline void
+static inline void
 __attribute__ ((always_inline))
-elf_machine_lazy_rel (struct link_map *map,
-                      Elf32_Addr l_addr, const Elf32_Rela *reloc,
-                      int skip_ifunc)
+elf_machine_lazy_rel (struct link_map *map, struct r_scope_elem *scope[],
+		      ElfW(Addr) l_addr, const ElfW(Rela) *reloc,
+		      int skip_ifunc)
 {
   Elf32_Addr *const reloc_addr = (void *) (l_addr + reloc->r_offset);
   const unsigned int r_type = ELF32_R_TYPE (reloc->r_info);
