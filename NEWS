@@ -527,6 +527,11 @@ Major new features:
   The latest GCC available at this time (10.2) does not support this level of
   fortification.
 
+* Support for OpenRISC on Linux has been added.
+
+  The OpenRISC port requires at least Linux 5.4, GCC 11 and binutils 2.35.
+  Currently only soft-float is supported.
+
 Deprecated and removed features, and other changes affecting compatibility:
 
 * The mallinfo function is marked deprecated.  Callers should call
