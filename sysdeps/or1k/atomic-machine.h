@@ -74,4 +74,6 @@ typedef uintmax_t uatomic_max_t;
   __atomic_val_bysize (__arch_compare_and_exchange_val, int,		\
 		       mem, new, old, __ATOMIC_ACQUIRE)
 
+#define atomic_full_barrier() ({ asm volatile ("l.msync" ::: "memory"); })
+
 #endif /* atomic-machine.h */
