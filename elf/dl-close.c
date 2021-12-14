@@ -257,7 +257,7 @@ _dl_close_worker (struct link_map *map, bool force)
 
   /* Sort the entries.  We can skip looking for the binary itself which is
      at the front of the search list for the main namespace.  */
-  _dl_sort_maps (maps, nloaded, (nsid == LM_ID_BASE), true);
+  _dl_sort_maps (maps, nloaded, (nsid == LM_ID_BASE));
 
   /* Call all termination functions at once.  */
 #ifdef SHARED
