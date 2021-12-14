@@ -23,11 +23,10 @@
 /* Note: this is the older, "original" sorting algorithm, being used as
    default up to 2.35.
 
-   Sort array MAPS according to dependencies of the contained objects.
-   If FOR_FINI is true, this is called for finishing an object.  */
+   Sort array MAPS according to dependencies of the contained objects.  */
 static void
 _dl_sort_maps_original (struct link_map **maps, unsigned int nmaps,
-			unsigned int skip, bool for_fini)
+			unsigned int skip)
 {
   /* Allows caller to do the common optimization of skipping the first map,
      usually the main binary.  */
@@ -47,14 +46,6 @@ _dl_sort_maps_original (struct link_map **maps, unsigned int nmaps,
       ++seen[i];
       struct link_map *thisp = maps[i];
 
-      if (__glibc_unlikely (for_fini))
-	{
-	  /* Do not handle ld.so in secondary namespaces and objects which
-	     are not removed.  */
-	  if (thisp != thisp->l_real || thisp->l_idx == -1)
-	    goto skip;
-	}
-
       /* Find the last object in the list for which the current one is
 	 a dependency and move the current object behind the object
 	 with the dependency.  */
@@ -67,7 +58,6 @@ _dl_sort_maps_original (struct link_map **maps, unsigned int nmaps,
 	    while (*runp != NULL)
 	      if (__glibc_unlikely (*runp++ == thisp))
 		{
-		move:
 		  /* Move the current object to the back past the last
 		     object with it as the dependency.  */
 		  memmove (&maps[i], &maps[i + 1],
@@ -87,31 +77,9 @@ _dl_sort_maps_original (struct link_map **maps, unsigned int nmaps,
 		  goto next;
 		}
 
-	  if (__glibc_unlikely (for_fini && maps[k]->l_reldeps != NULL))
-	    {
-	      unsigned int m = maps[k]->l_reldeps->act;
-	      struct link_map **relmaps = &maps[k]->l_reldeps->list[0];
-
-	      /* Look through the relocation dependencies of the object.  */
-	      while (m-- > 0)
-		if (__glibc_unlikely (relmaps[m] == thisp))
-		  {
-		    /* If a cycle exists with a link time dependency,
-		       preserve the latter.  */
-		    struct link_map **runp = thisp->l_initfini;
-		    if (runp != NULL)
-		      while (*runp != NULL)
-			if (__glibc_unlikely (*runp++ == maps[k]))
-			  goto ignore;
-		    goto move;
-		  }
-	    ignore:;
-	    }
-
 	  --k;
 	}
 
-    skip:
       if (++i == nmaps)
 	break;
     next_clear:
@@ -137,8 +105,7 @@ strong_alias (_dl_sort_maps_original, _dl_sort_maps);
    decremented before storing the current map at each level.  */
 
 static void
-dfs_traversal (struct link_map ***rpo, struct link_map *map,
-	       bool *do_reldeps)
+dfs_traversal (struct link_map ***rpo, struct link_map *map)
 {
   if (map->l_visited)
     return;
@@ -152,22 +119,7 @@ dfs_traversal (struct link_map ***rpo, struct link_map *map,
 	  struct link_map *dep = map->l_initfini[i];
 	  if (dep->l_visited == 0
 	      && dep->l_main_map == 0)
-	    dfs_traversal (rpo, dep, do_reldeps);
-	}
-    }
-
-  if (__glibc_unlikely (do_reldeps != NULL && map->l_reldeps != NULL))
-    {
-      /* Indicate that we encountered relocation dependencies during
-	 traversal.  */
-      *do_reldeps = true;
-
-      for (int m = map->l_reldeps->act - 1; m >= 0; m--)
-	{
-	  struct link_map *dep = map->l_reldeps->list[m];
-	  if (dep->l_visited == 0
-	      && dep->l_main_map == 0)
-	    dfs_traversal (rpo, dep, do_reldeps);
+	    dfs_traversal (rpo, dep);
 	}
     }
 
@@ -180,7 +132,7 @@ dfs_traversal (struct link_map ***rpo, struct link_map *map,
 
 static void
 _dl_sort_maps_dfs (struct link_map **maps, unsigned int nmaps,
-		   unsigned int skip __attribute__ ((unused)), bool for_fini)
+		   unsigned int skip __attribute__ ((unused)))
 {
   for (int i = nmaps - 1; i >= 0; i--)
     maps[i]->l_visited = 0;
@@ -225,51 +177,14 @@ _dl_sort_maps_dfs (struct link_map **maps, unsigned int nmaps,
      bottom of above dfs_traversal() routine).  */
   struct link_map **rpo_head = &rpo[nmaps];
 
-  bool do_reldeps = false;
-  bool *do_reldeps_ref = (for_fini ? &do_reldeps : NULL);
-
   for (int i = nmaps - 1; i >= 0; i--)
     {
-      dfs_traversal (&rpo_head, maps[i], do_reldeps_ref);
-
+      dfs_traversal (&rpo_head, maps[i]);
       /* We can break early if all objects are already placed.  */
       if (rpo_head == rpo)
-	goto end;
+	break;
     }
   assert (rpo_head == rpo);
-
- end:
-  /* Here we may do a second pass of sorting, using only l_initfini[]
-     static dependency links. This is avoided if !FOR_FINI or if we didn't
-     find any reldeps in the first DFS traversal.
-
-     The reason we do this is: while it is unspecified how circular
-     dependencies should be handled, the presumed reasonable behavior is to
-     have destructors to respect static dependency links as much as possible,
-     overriding reldeps if needed. And the first sorting pass, which takes
-     l_initfini/l_reldeps links equally, may not preserve this priority.
-
-     Hence we do a 2nd sorting pass, taking only DT_NEEDED links into account
-     (see how the do_reldeps argument to dfs_traversal() is NULL below).  */
-  if (do_reldeps)
-    {
-      for (int i = nmaps - 1; i >= 0; i--)
-	rpo[i]->l_visited = 0;
-
-      struct link_map **maps_head = &maps[nmaps];
-      for (int i = nmaps - 1; i >= 0; i--)
-	{
-	  dfs_traversal (&maps_head, rpo[i], NULL);
-
-	  /* We can break early if all objects are already placed.
-	     The below memcpy is not needed in the do_reldeps case here,
-	     since we wrote back to maps[] during DFS traversal.  */
-	  if (maps_head == maps)
-	    return;
-	}
-      assert (maps_head == maps);
-      return;
-    }
 
   memcpy (maps, rpo, sizeof (struct link_map *) * nmaps);
 }
@@ -284,7 +199,7 @@ _dl_sort_maps_init (void)
 
 void
 _dl_sort_maps (struct link_map **maps, unsigned int nmaps,
-	       unsigned int skip, bool for_fini)
+	       unsigned int skip)
 {
   /* It can be tempting to use a static function pointer to store and call
      the current selected sorting algorithm routine, but experimentation
@@ -294,9 +209,9 @@ _dl_sort_maps (struct link_map **maps, unsigned int nmaps,
      input cases. A simple if-case with direct function calls appears to
      be the fastest.  */
   if (__glibc_likely (GLRO(dl_dso_sort_algo) == dso_sort_algorithm_original))
-    _dl_sort_maps_original (maps, nmaps, skip, for_fini);
+    _dl_sort_maps_original (maps, nmaps, skip);
   else
-    _dl_sort_maps_dfs (maps, nmaps, skip, for_fini);
+    _dl_sort_maps_dfs (maps, nmaps, skip);
 }
 
 #endif /* HAVE_TUNABLES.  */
