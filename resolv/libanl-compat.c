@@ -30,6 +30,8 @@ __libanl_version_placeholder_1 (void)
 {
 }
 
+# if SHLIB_COMPAT (libanl, GLIBC_2_2_3, GLIBC_2_34)
 compat_symbol (libanl, __libanl_version_placeholder_1,
                __libanl_version_placeholder, GLIBC_2_2_3);
+# endif
 #endif
