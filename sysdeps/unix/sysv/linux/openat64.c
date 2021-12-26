@@ -21,7 +21,7 @@
 
 #include <sysdep-cancel.h>
 
-#ifdef __OFF_T_MATCHES_OFF64_T
+#if defined __OFF_T_MATCHES_OFF64_T && (__WORDSIZE != 32)
 # define EXTRA_OPEN_FLAGS 0
 #else
 # define EXTRA_OPEN_FLAGS O_LARGEFILE
