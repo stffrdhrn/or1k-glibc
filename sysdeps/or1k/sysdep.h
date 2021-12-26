@@ -77,7 +77,4 @@
 /* Local label name for asm code.  */
 #define L(name)         .L##name
 
-/* Specify the size in bytes of a machine register.  */
-#define REGSIZE         4
-
 #endif /* __ASSEMBLER__ */
