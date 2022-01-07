@@ -40,6 +40,12 @@ ENTRY(__setcontext)
 	l.bf	1f
 	 l.nop
 
+#ifdef __or1k_hard_float__
+	/* Restore the floating point state.  */
+	l.lwz	r28, (MCONTEXT_FPCSR)(r30)
+	l.mtspr	r0, r28, 20
+#endif /* __or1k_hard_float__ */
+
 	/* Restore argument registers, for the makecontext case.  */
 	l.lwz	r3, (UCONTEXT_MCONTEXT +  3*4)(r30)
 	l.lwz	r4, (UCONTEXT_MCONTEXT +  4*4)(r30)

@@ -36,7 +36,6 @@
 #define _FP_MUL_MEAT_DW_Q(R,X,Y)				\
   _FP_MUL_MEAT_DW_4_wide(_FP_WFRACBITS_Q,R,X,Y,umul_ppmm)
 
-
 #define _FP_DIV_MEAT_S(R,X,Y)	_FP_DIV_MEAT_1_loop(S,R,X,Y)
 #define _FP_DIV_MEAT_D(R,X,Y)	_FP_DIV_MEAT_2_udiv(D,R,X,Y)
 #define _FP_DIV_MEAT_Q(R,X,Y)	_FP_DIV_MEAT_4_udiv(Q,R,X,Y)
@@ -89,5 +88,22 @@
   unsigned int _fpcsr __attribute__ ((unused)) = FP_RND_NEAREST
 
 #define FP_ROUNDMODE (_fpcsr & FP_RND_MASK)
+
+#ifdef __or1k_hard_float__
+#define FP_INIT_ROUNDMODE					\
+do {								\
+  __asm__ volatile ("l.mfspr %0,r0,20" : "=r" (_fpcsr));	\
+} while (0)
+
+#define FP_HANDLE_EXCEPTIONS					\
+do {								\
+  if (__builtin_expect (_fex, 0))				\
+    {								\
+      _fpcsr &= ~FP_EX_ALL;					\
+      _fpcsr |= _fex;						\
+      __asm__ volatile ("l.mtspr r0,%0,20" : : "r" (_fpcsr));	\
+    }								\
+} while (0)
+#endif /* __or1k_hard_float__ */
 
 #define _FP_TININESS_AFTER_ROUNDING 0

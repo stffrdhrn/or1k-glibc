@@ -46,6 +46,12 @@ ENTRY(__getcontext)
 	l.sw	(UCONTEXT_MCONTEXT + 28*4)(r3), r28
 	l.sw	(UCONTEXT_MCONTEXT + 30*4)(r3), r30
 
+#ifdef __or1k_hard_float__
+	/* Store the floating point state.  */
+	l.mfspr	r4, r0, 20
+	l.sw	(MCONTEXT_FPCSR)(r3), r4
+#endif /* __or1k_hard_float__ */
+
 	/* Get signal mask.  */
 	/* rt_sigprocmask (SIG_BLOCK, NULL, &ucp->uc_sigmask, _NSIG8) */
 	l.ori	r6, r0, _NSIG8

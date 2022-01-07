@@ -45,6 +45,12 @@ ENTRY(__swapcontext)
 	l.sw	(UCONTEXT_MCONTEXT + 28*4)(r3), r28
 	l.sw	(UCONTEXT_MCONTEXT + 30*4)(r3), r30
 
+#ifdef __or1k_hard_float__
+	/* Store the floating point state.  */
+	l.mfspr	r6, r0, 20
+	l.sw	(MCONTEXT_FPCSR)(r3), r6
+#endif /* __or1k_hard_float__ */
+
 	/* Store ucp to non-argument syscall preserved register.  */
 	l.ori	r30, r4, 0
 
@@ -81,6 +87,12 @@ ENTRY(__swapcontext)
 	l.sfgeui r11, 0xf001
 	l.bf	1f
 	 l.nop
+
+#ifdef __or1k_hard_float__
+	/* Restore the floating point state.  */
+	l.lwz	r28, (MCONTEXT_FPCSR)(r30)
+	l.mtspr	r0, r28, 20
+#endif /* __or1k_hard_float__ */
 
 	/* Restore argument registers, for the makecontext case.  */
 	l.lwz	r3, (UCONTEXT_MCONTEXT +  3*4)(r30)
