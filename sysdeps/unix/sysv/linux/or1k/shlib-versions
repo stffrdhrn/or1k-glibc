@@ -1,2 +1,6 @@
 DEFAULT                 GLIBC_2.35
+%ifdef HAVE_OR1K_HARD_FLOAT
+ld=ld-linux-or1khf.so.1
+%else
 ld=ld-linux-or1k.so.1
+%endif

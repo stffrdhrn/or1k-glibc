@@ -144,6 +144,9 @@
 /* Define whether ARM used hard-float and support VFPvX-D32.  */
 #undef HAVE_ARM_PCS_VFP_D32
 
+/* Define whether OpenRISC compiler is using hard-float.  */
+#undef HAVE_OR1K_HARD_FLOAT
+
 /* Linux specific: minimum supported kernel version.  */
 #undef	__LINUX_KERNEL_VERSION
 
